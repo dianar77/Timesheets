@@ -7,8 +7,11 @@ const vesselRoutes = require('./routes/vesselRoutes');
 const clientRoutes = require('./routes/clientRoutes');
 const workOrderRoutes = require('./routes/workOrderRoutes');
 const projectRoutes = require('./routes/projectRoutes');
+const disciplineRoutes = require('./routes/disciplineRoutes');
 
-const app = express();
+const app = require('./app');
+const sequelize = require('./config/database');
+
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
@@ -20,9 +23,28 @@ app.use('/api/vessels', vesselRoutes);
 app.use('/api/workorders', workOrderRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/api/disciplines', disciplineRoutes);
 
+async function assertDatabaseConnectionOk() {
+  console.log(`Checking database connection...`);
+  try {
+    await sequelize.authenticate();
+    console.log('Database connection OK!');
+  } catch (error) {
+    console.log('Unable to connect to the database:');
+    console.log(error.message);
+    process.exit(1);
+  }
+}
 
+async function init() {
+  await assertDatabaseConnectionOk();
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+  console.log(`Starting Sequelize + Express example on port ${PORT}...`);
+
+  app.listen(PORT, () => {
+    console.log(`Express server started on port ${PORT}.`);
+  });
+}
+
+init();

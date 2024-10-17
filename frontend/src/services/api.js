@@ -152,4 +152,25 @@ export const getVessels = async () => {
   return response.data;
 };
 
+// Discipline endpoints
+export const getDisciplines = async () => {
+  const response = await axios.get('/api/disciplines');
+  return response.data;
+};
+
+export const createDiscipline = async (discipline) => {
+  const response = await axios.post('/api/disciplines', discipline);
+  return response.data;
+};
+
+export const updateDiscipline = async (id, discipline) => {
+  const response = await axios.put(`/api/disciplines/${id}`, discipline);
+  return response.data;
+};
+
+export const deleteDiscipline = async (id) => {
+  const response = await axios.delete(`/api/disciplines/${id}`);
+  return response.data;
+};
+
 export default api;

@@ -5,6 +5,7 @@ import TimesheetTable from './components/TimesheetTable';
 import VesselTable from './components/VesselTable';
 import WorkOrderTable from './components/WorkOrderTable';
 import ProjectTable from './components/ProjectTable';
+import DisciplineTable from './components/DisciplineTable';
 import Sidebar from './components/Sidebar';
 import './App.css';
 
@@ -20,6 +21,7 @@ function App() {
             <Route path="/vessels" element={<VesselTable />} />
             <Route path="/workorders" element={<WorkOrderTable />} />
             <Route path="/projects" element={<ProjectTable />} />
+            <Route path="/disciplines" element={<DisciplineTable />} />
             {/* Add more routes as needed */}
           </Routes>
         </div>
