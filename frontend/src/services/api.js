@@ -21,7 +21,26 @@ export const getTimesheets = async () => {
 
 export const getTimesheetById = (id) => api.get(`/timesheets/${id}`);
 export const createTimesheet = (data) => api.post('/timesheets', data);
-export const updateTimesheet = (id, data) => api.put(`/timesheets/${id}`, data);
+export const updateTimesheet = async (id, timesheetData) => {
+  try {
+    console.log('Sending update request for timesheet:', id, timesheetData);
+    const response = await axios.put(`${API_URL}/timesheets/${id}`, timesheetData);
+    console.log('Update timesheet response:', response);
+    return response.data; // Return the data directly
+  } catch (error) {
+    console.error('Error updating timesheet:', error);
+    if (error.response) {
+      console.error('Error response:', error.response.data);
+      console.error('Error status:', error.response.status);
+      console.error('Error headers:', error.response.headers);
+    } else if (error.request) {
+      console.error('Error request:', error.request);
+    } else {
+      console.error('Error message:', error.message);
+    }
+    throw error;
+  }
+};
 export const deleteTimesheet = (id) => api.delete(`/timesheets/${id}`);
 
 // Staff endpoints

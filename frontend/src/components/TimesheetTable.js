@@ -25,7 +25,7 @@ const EditableCell = ({
       inputNode = <InputNumber />;
       break;
     case 'date':
-      inputNode = <DatePicker />;
+      inputNode = <DatePicker format="YYYY-MM-DD" />;
       break;
     case 'select':
       if (dataIndex === 'StaffID') {
@@ -62,6 +62,7 @@ const EditableCell = ({
               message: `Please Input ${title}!`,
             },
           ]}
+          initialValue={inputType === 'date' && record[dataIndex] ? moment(record[dataIndex]) : record[dataIndex]}
         >
           {inputNode}
         </Form.Item>
@@ -79,12 +80,19 @@ const TimesheetTable = () => {
   const [workOrders, setWorkOrders] = useState([]);
   const [editingKey, setEditingKey] = useState('');
   const [loading, setLoading] = useState(true);
+  const [newTimesheet, setNewTimesheet] = useState(null);
 
   useEffect(() => {
     fetchTimesheets();
     fetchStaff();
     fetchWorkOrders();
   }, []);
+
+  useEffect(() => {
+    if (editingKey === '') {
+      fetchTimesheets();
+    }
+  }, [editingKey]);
 
   const fetchTimesheets = async () => {
     try {
@@ -158,38 +166,56 @@ const TimesheetTable = () => {
   const isEditing = (record) => record.TimesheetID === editingKey;
 
   const edit = (record) => {
-    form.setFieldsValue({ 
-      ...record, 
-      Date: moment(record.Date) // Ensure Date is a moment object
+    form.setFieldsValue({
+      ...record,
+      Date: record.Date ? moment(record.Date) : null,
+      StaffID: record.StaffID,
+      WorkOrderID: record.WorkOrderID,
+      Hours: record.Hours
     });
     setEditingKey(record.TimesheetID);
   };
 
   const cancel = () => {
     setEditingKey('');
+    if (newTimesheet) {
+      setNewTimesheet(null);
+    }
   };
 
   const save = async (key) => {
     try {
       const row = await form.validateFields();
-      const newData = [...timesheets];
-      const index = newData.findIndex((item) => key === item.TimesheetID);
-      if (index > -1) {
-        const item = newData[index];
-        const updatedItem = { 
-          ...item, 
-          ...row, 
-          Date: row.Date.format('YYYY-MM-DD') 
-        };
-        await updateTimesheet(key, updatedItem);
-        newData.splice(index, 1, updatedItem);
-        setTimesheets(newData);
-        setEditingKey('');
+      let updatedTimesheet;
+      
+      if (key === 'new') {
+        // Creating a new timesheet
+        updatedTimesheet = await createTimesheet(row);
+        setTimesheets(prev => [updatedTimesheet, ...prev]);
+        setNewTimesheet(null);
       } else {
-        throw new Error('Timesheet not found');
+        // Updating an existing timesheet
+        const updatedItem = { 
+          ...row, 
+          TimesheetID: key,
+          Date: row.Date ? row.Date.format('YYYY-MM-DD') : null,
+          StaffID: Number(row.StaffID),
+          WorkOrderID: Number(row.WorkOrderID),
+          Hours: Number(row.Hours)
+        };
+        updatedTimesheet = await updateTimesheet(key, updatedItem);
+        setTimesheets(prev => prev.map(item => 
+          item.TimesheetID === key ? updatedTimesheet : item
+        ));
       }
+      
+      setEditingKey('');
+      message.success('Timesheet saved successfully');
+      
+      // Force a re-render by updating a state
+      setTimesheets(prev => [...prev]);
     } catch (errInfo) {
-      console.error('Validate Failed:', errInfo);
+      console.error('Save failed:', errInfo);
       message.error('Failed to save: ' + errInfo.message);
     }
   };
@@ -206,21 +232,17 @@ const TimesheetTable = () => {
     }
   };
 
-  const handleAdd = async () => {
-    const newTimesheet = {
-      StaffID: null,  // You might want to set a default value or leave it null
-      WorkOrderID: null,  // You might want to set a default value or leave it null
-      Date: moment().format('YYYY-MM-DD'),
+  const handleAdd = () => {
+    const newTimesheetData = {
+      TimesheetID: 'new', // Temporary ID for the new row
+      StaffID: null,
+      WorkOrderID: null,
+      Date: null,
       Hours: 0,
     };
-    try {
-      const addedTimesheet = await createTimesheet(newTimesheet);
-      setTimesheets([addedTimesheet, ...timesheets]);
-      message.success('New timesheet added successfully');
-    } catch (error) {
-      console.error('Error adding timesheet:', error);
-      message.error('Error adding timesheet');
-    }
+    setNewTimesheet(newTimesheetData);
+    setEditingKey('new');
+    form.setFieldsValue(newTimesheetData);
   };
 
   const columns = [
@@ -255,7 +277,20 @@ const TimesheetTable = () => {
       dataIndex: 'Date',
       key: 'Date',
       editable: true,
-      render: (text) => moment(text).format('YYYY-MM-DD'),
+      render: (text, record) => {
+        const editable = isEditing(record);
+        return editable ? (
+          <Form.Item
+            name="Date"
+            style={{ margin: 0 }}
+            rules={[{ required: true, message: 'Date is required' }]}
+          >
+            <DatePicker format="YYYY-MM-DD" />
+          </Form.Item>
+        ) : (
+          <span>{text ? moment(text).format('YYYY-MM-DD') : ''}</span>
+        );
+      },
     },
     {
       title: 'Hours',
@@ -341,8 +376,8 @@ const TimesheetTable = () => {
           }}
           loading={loading}
           columns={mergedColumns}
-          dataSource={timesheets}
-          rowKey={(record) => record.TimesheetID} // Use TimesheetID as the key
+          dataSource={newTimesheet ? [newTimesheet, ...timesheets] : timesheets}
+          rowKey={(record) => record.TimesheetID}
           bordered
           style={{ background: 'white' }}
         />

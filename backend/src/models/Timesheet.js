@@ -20,7 +20,7 @@ const Timesheet = sequelize.define('Timesheet', {
     allowNull: false
   },
   Hours: {
-    type: DataTypes.FLOAT,
+    type: DataTypes.DECIMAL(5, 2),
     allowNull: false
   }
 }, {
