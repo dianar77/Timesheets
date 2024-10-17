@@ -249,6 +249,44 @@ const TimesheetTable = () => {
     setSortedInfo(sorter);
   };
 
+  const FilterHeader = () => (
+    <tr className="filter-row">
+      <th>
+        <Select
+          style={{ width: '100%' }}
+          placeholder="Filter by Staff"
+          onChange={(value) => handleFilterChange('staff', value)}
+          allowClear
+        >
+          {staff.map(s => (
+            <Option key={s.StaffID} value={s.StaffID}>{s.Name}</Option>
+          ))}
+        </Select>
+      </th>
+      <th>
+        <Select
+          style={{ width: '100%' }}
+          placeholder="Filter by Work Order"
+          onChange={(value) => handleFilterChange('workOrder', value)}
+          allowClear
+        >
+          {workOrders.map(wo => (
+            <Option key={wo.WorkOrderID} value={wo.WorkOrderID}>{`${wo.Task} - ${wo.Description}`}</Option>
+          ))}
+        </Select>
+      </th>
+      <th>
+        <RangePicker
+          style={{ width: '100%' }}
+          onChange={(dates) => handleFilterChange('dateRange', dates)}
+        />
+      </th>
+      <th></th> {/* Empty cell for Hours column */}
+      <th></th> {/* Empty cell for Actions column */}
+      <th></th> {/* Extra empty cell to match the number of columns */}
+    </tr>
+  );
+
   const columns = [
     {
       title: 'ID',
@@ -373,32 +411,6 @@ const TimesheetTable = () => {
   return (
     <div>
       <h2>Timesheet Table</h2>
-      <div style={{ marginBottom: 16 }}>
-        <Select
-          style={{ width: 200, marginRight: 8 }}
-          placeholder="Filter by Staff"
-          onChange={(value) => handleFilterChange('staff', value)}
-          allowClear
-        >
-          {staff.map(s => (
-            <Option key={s.StaffID} value={s.StaffID}>{s.Name}</Option>
-          ))}
-        </Select>
-        <Select
-          style={{ width: 200, marginRight: 8 }}
-          placeholder="Filter by Work Order"
-          onChange={(value) => handleFilterChange('workOrder', value)}
-          allowClear
-        >
-          {workOrders.map(wo => (
-            <Option key={wo.WorkOrderID} value={wo.WorkOrderID}>{`${wo.Task} - ${wo.Description}`}</Option>
-          ))}
-        </Select>
-        <RangePicker
-          style={{ marginRight: 8 }}
-          onChange={(dates) => handleFilterChange('dateRange', dates)}
-        />
-      </div>
       <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }} icon={<PlusOutlined />}>
         Add Timesheet
       </Button>
@@ -407,6 +419,14 @@ const TimesheetTable = () => {
           components={{
             body: {
               cell: EditableCell,
+            },
+            header: {
+              wrapper: ({ children }) => (
+                <thead>
+                  <FilterHeader />
+                  {children}
+                </thead>
+              ),
             },
           }}
           loading={loading}

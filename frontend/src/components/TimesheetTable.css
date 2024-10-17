@@ -17,3 +17,25 @@
 .ant-form-item {
   margin-bottom: 0;
 }
+
+/* New styles for the filter row */
+.filter-row th {
+  padding: 8px;
+  background-color: #fafafa;
+  font-weight: normal; /* Make the filter row less prominent */
+}
+
+/* Ensure the filter row spans the entire table width */
+.ant-table-thead > tr.filter-row > th {
+  padding: 8px;
+}
+
+/* Add this new style to remove borders from filter cells */
+.filter-row th {
+  border: none !important;
+}
+
+/* Adjust the padding of the actual header row to compensate for the filter row */
+.ant-table-thead > tr:not(.filter-row) > th {
+  padding-top: 16px;
+}
