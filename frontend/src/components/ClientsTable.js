@@ -44,6 +44,10 @@ const ClientsTable = () => {
   const [editingKey, setEditingKey] = useState('');
   const [loading, setLoading] = useState(true);
   const [newClient, setNewClient] = useState(null);
+  const [filters, setFilters] = useState({
+    name: '',
+  });
+  const [sortedInfo, setSortedInfo] = useState({});
 
   useEffect(() => {
     fetchClients();
@@ -140,6 +144,35 @@ const ClientsTable = () => {
     form.setFieldsValue(newClientData);
   };
 
+  const handleFilterChange = (filterType, value) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [filterType]: value
+    }));
+  };
+
+  const filteredClients = clients.filter(client => {
+    return client.Name.toLowerCase().includes(filters.name.toLowerCase());
+  });
+
+  const handleChange = (pagination, filters, sorter) => {
+    console.log('Various parameters', pagination, filters, sorter);
+    setSortedInfo(sorter);
+  };
+
+  const FilterHeader = () => (
+    <tr className="filter-row">
+      <th>
+        <Input
+          placeholder="Filter by Name"
+          value={filters.name}
+          onChange={(e) => handleFilterChange('name', e.target.value)}
+        />
+      </th>
+      <th></th> {/* Empty cell for Actions column */}
+    </tr>
+  );
+
   const columns = [
     {
       title: 'ID',
@@ -153,6 +186,8 @@ const ClientsTable = () => {
       dataIndex: 'Name',
       key: 'Name',
       editable: true,
+      sorter: (a, b) => a.Name.localeCompare(b.Name),
+      sortOrder: sortedInfo.columnKey === 'Name' && sortedInfo.order,
     },
     {
       title: 'Actions',
@@ -209,7 +244,6 @@ const ClientsTable = () => {
     };
   }).filter(col => !col.hidden);
 
-
   return (
     <div>
       <h2>Clients Table</h2>
@@ -222,13 +256,22 @@ const ClientsTable = () => {
             body: {
               cell: EditableCell,
             },
+            header: {
+              wrapper: ({ children }) => (
+                <thead>
+                  <FilterHeader />
+                  {children}
+                </thead>
+              ),
+            },
           }}
           loading={loading}
           columns={mergedColumns}
-          dataSource={newClient ? [newClient, ...clients] : clients}
+          dataSource={newClient ? [newClient, ...filteredClients] : filteredClients}
           rowKey={(record) => record.ClientID}
           bordered
           style={{ background: 'white' }}
+          onChange={handleChange}
         />
       </Form>
     </div>

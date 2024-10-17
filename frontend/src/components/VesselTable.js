@@ -241,19 +241,25 @@ const VesselTable = () => {
       dataIndex: 'VesselID',
       key: 'VesselID',
       editable: false,
-      hidden: true
+      hidden: true,
+      sorter: (a, b) => a.VesselID - b.VesselID,
+      sortOrder: sortedInfo.columnKey === 'VesselID' && sortedInfo.order,
     },
     {
       title: 'Name',
       dataIndex: 'Name',
       key: 'Name',
       editable: true,
+      sorter: (a, b) => a.Name.localeCompare(b.Name),
+      sortOrder: sortedInfo.columnKey === 'Name' && sortedInfo.order,
     },
     {
       title: 'Number',
       dataIndex: 'Num',
       key: 'Num',
       editable: true,
+      sorter: (a, b) => a.Num - b.Num,
+      sortOrder: sortedInfo.columnKey === 'Num' && sortedInfo.order,
     },
     {
       title: 'Client',
@@ -264,6 +270,12 @@ const VesselTable = () => {
         const client = clients.find(c => c.ClientID === clientId);
         return client ? client.Name : 'Unknown';
       },
+      sorter: (a, b) => {
+        const clientA = clients.find(c => c.ClientID === a.ClientID);
+        const clientB = clients.find(c => c.ClientID === b.ClientID);
+        return clientA.Name.localeCompare(clientB.Name);
+      },
+      sortOrder: sortedInfo.columnKey === 'ClientID' && sortedInfo.order,
     },
     {
       title: 'Actions',
