@@ -1,13 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import ClientsTable from './components/ClientsTable';
-import TimesheetTable from './components/TimesheetTable';
-import VesselTable from './components/VesselTable';
-import WorkOrderTable from './components/WorkOrderTable';
-import ProjectTable from './components/ProjectTable';
-import DisciplineTable from './components/DisciplineTable';
-import StaffTable from './components/StaffTable';
-import Sidebar from './components/Sidebar';
+import ClientsTable from './components/List/ClientsTable';
+import TimesheetTable from './components/List/TimesheetTable';
+import VesselTable from './components/List/VesselTable';
+import WorkOrderTable from './components/List/WorkOrderTable';
+import ProjectTable from './components/List/ProjectTable';
+import DisciplineTable from './components/List/DisciplineTable';
+import StaffTable from './components/List/StaffTable';
+import Sidebar from './components/List/Sidebar';
 import './App.css';
 
 function App() {

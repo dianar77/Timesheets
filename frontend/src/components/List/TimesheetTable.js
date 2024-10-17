@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, DatePicker, InputNumber, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getTimesheets, updateTimesheet, deleteTimesheet, createTimesheet, getStaff, getWorkOrders } from '../services/api';
+import { getTimesheets, updateTimesheet, deleteTimesheet, createTimesheet, getStaff, getWorkOrders } from '../../services/api';
 import moment from 'moment';
 import './TimesheetTable.css';
 

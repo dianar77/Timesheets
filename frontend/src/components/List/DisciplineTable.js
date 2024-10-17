@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, InputNumber } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getDisciplines, updateDiscipline, deleteDiscipline, createDiscipline } from '../services/api';
+import { getDisciplines, updateDiscipline, deleteDiscipline, createDiscipline } from '../../services/api';
 import './DisciplineTable.css';
 
 const EditableCell = ({

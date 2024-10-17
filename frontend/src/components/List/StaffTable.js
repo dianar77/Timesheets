@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getStaff, updateStaff, deleteStaff, createStaff, getDisciplines } from '../services/api';
+import { getStaff, updateStaff, deleteStaff, createStaff, getDisciplines } from '../../services/api';
 import './StaffTable.css';
 
 const { Option } = Select;

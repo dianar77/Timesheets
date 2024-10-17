@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Input, Button, Popconfirm, Form, message } from 'antd';
+import { Table, Input, Button, Popconfirm, Form, message, InputNumber, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getClients, createClient, updateClient, deleteClient } from '../services/api';
-import './ClientsTable.css';
+import { fetchVessels, createVessel, updateVessel, deleteVessel, getClients } from '../../services/api';
+import './VesselTable.css';
+
+const { Option } = Select;
 
 const EditableCell = ({
   editing,
@@ -12,9 +14,26 @@ const EditableCell = ({
   record,
   index,
   children,
+  clients,
   ...restProps
 }) => {
-  const inputNode = <Input />;
+  let inputNode;
+  switch (inputType) {
+    case 'number':
+      inputNode = <InputNumber />;
+      break;
+    case 'select':
+      inputNode = (
+        <Select>
+          {clients.map(client => (
+            <Option key={client.ClientID} value={client.ClientID}>{client.Name}</Option>
+          ))}
+        </Select>
+      );
+      break;
+    default:
+      inputNode = <Input />;
+  }
   
   return (
     <td {...restProps}>
@@ -38,84 +57,102 @@ const EditableCell = ({
   );
 };
 
-const ClientsTable = () => {
+const VesselTable = () => {
   const [form] = Form.useForm();
+  const [vessels, setVessels] = useState([]);
   const [clients, setClients] = useState([]);
   const [editingKey, setEditingKey] = useState('');
   const [loading, setLoading] = useState(true);
-  const [newClient, setNewClient] = useState(null);
+  const [newVessel, setNewVessel] = useState(null);
   const [filters, setFilters] = useState({
     name: '',
+    number: '',
+    client: null,
   });
   const [sortedInfo, setSortedInfo] = useState({});
 
   useEffect(() => {
-    fetchClients();
+    fetchVesselData();
+    fetchClientData();
   }, []);
 
   useEffect(() => {
     if (editingKey === '') {
-      fetchClients();
+      fetchVesselData();
     }
   }, [editingKey]);
 
-  const fetchClients = async () => {
+  const fetchVesselData = async () => {
     try {
       setLoading(true);
-      const data = await getClients();
+      const data = await fetchVessels();
       if (Array.isArray(data)) {
-        setClients(data);
+        setVessels(data);
       } else {
         throw new Error('Unexpected data format');
       }
     } catch (error) {
-      console.error('Error fetching clients:', error);
-      message.error(`Error fetching clients: ${error.message}`);
+      console.error('Error fetching vessels:', error);
+      message.error(`Error fetching vessels: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
-  const isEditing = (record) => record.ClientID === editingKey;
+  const fetchClientData = async () => {
+    try {
+      const clientData = await getClients();
+      setClients(clientData);
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+      message.error(`Error fetching client data: ${error.message}`);
+    }
+  };
+
+  const isEditing = (record) => record.VesselID === editingKey;
 
   const edit = (record) => {
     form.setFieldsValue({
       ...record,
       Name: record.Name,
+      Num: record.Num,
+      ClientID: record.ClientID
     });
-    setEditingKey(record.ClientID);
+    setEditingKey(record.VesselID);
   };
 
   const cancel = () => {
     setEditingKey('');
-    if (newClient) {
-      setNewClient(null);
+    if (newVessel) {
+      setNewVessel(null);
     }
   };
 
   const save = async (key) => {
     try {
       const row = await form.validateFields();
-      let updatedClient;
+      let updatedVessel;
       
       if (key === 'new') {
-        updatedClient = await createClient(row);
-        setClients(prev => [updatedClient, ...prev]);
-        setNewClient(null);
+        updatedVessel = await createVessel(row);
+        setVessels(prev => [updatedVessel, ...prev]);
+        setNewVessel(null);
       } else {
         const updatedItem = { 
           ...row, 
-          ClientID: key,
+          VesselID: key,
+          ClientID: Number(row.ClientID),
+          Num: Number(row.Num)
         };
-        updatedClient = await updateClient(key, updatedItem);
-        setClients(prev => prev.map(item => 
-          item.ClientID === key ? updatedClient : item
+        updatedVessel = await updateVessel(key, updatedItem);
+        setVessels(prev => prev.map(item => 
+          item.VesselID === key ? updatedVessel : item
         ));
       }
       
       setEditingKey('');
-      message.success('Client saved successfully');
-      setClients(prev => [...prev]);
+      message.success('Vessel saved successfully');
+      setVessels(prev => [...prev]);
     } catch (errInfo) {
       console.error('Save failed:', errInfo);
       message.error('Failed to save: ' + errInfo.message);
@@ -124,24 +161,26 @@ const ClientsTable = () => {
 
   const handleDelete = async (key) => {
     try {
-      await deleteClient(key);
-      const newData = clients.filter((item) => item.ClientID !== key);
-      setClients(newData);
-      message.success('Client deleted successfully');
+      await deleteVessel(key);
+      const newData = vessels.filter((item) => item.VesselID !== key);
+      setVessels(newData);
+      message.success('Vessel deleted successfully');
     } catch (error) {
-      console.error('Error deleting client:', error);
-      message.error('Error deleting client: ' + error.message);
+      console.error('Error deleting vessel:', error);
+      message.error('Error deleting vessel: ' + error.message);
     }
   };
 
   const handleAdd = () => {
-    const newClientData = {
-      ClientID: 'new',
+    const newVesselData = {
+      VesselID: 'new',
       Name: '',
+      Num: null,
+      ClientID: null,
     };
-    setNewClient(newClientData);
+    setNewVessel(newVesselData);
     setEditingKey('new');
-    form.setFieldsValue(newClientData);
+    form.setFieldsValue(newVesselData);
   };
 
   const handleFilterChange = (filterType, value) => {
@@ -151,8 +190,12 @@ const ClientsTable = () => {
     }));
   };
 
-  const filteredClients = clients.filter(client => {
-    return client.Name.toLowerCase().includes(filters.name.toLowerCase());
+  const filteredVessels = vessels.filter(vessel => {
+    return (
+      vessel.Name.toLowerCase().includes(filters.name.toLowerCase()) &&
+      (filters.number === '' || vessel.Num.toString().includes(filters.number)) &&
+      (!filters.client || vessel.ClientID === filters.client)
+    );
   });
 
   const handleChange = (pagination, filters, sorter) => {
@@ -169,6 +212,25 @@ const ClientsTable = () => {
           onChange={(e) => handleFilterChange('name', e.target.value)}
         />
       </th>
+      <th>
+        <Input
+          placeholder="Filter by Number"
+          value={filters.number}
+          onChange={(e) => handleFilterChange('number', e.target.value)}
+        />
+      </th>
+      <th>
+        <Select
+          style={{ width: '100%' }}
+          placeholder="Filter by Client"
+          onChange={(value) => handleFilterChange('client', value)}
+          allowClear
+        >
+          {clients.map(client => (
+            <Option key={client.ClientID} value={client.ClientID}>{client.Name}</Option>
+          ))}
+        </Select>
+      </th>
       <th></th> {/* Empty cell for Actions column */}
     </tr>
   );
@@ -176,10 +238,12 @@ const ClientsTable = () => {
   const columns = [
     {
       title: 'ID',
-      dataIndex: 'ClientID',
-      key: 'ClientID',
+      dataIndex: 'VesselID',
+      key: 'VesselID',
       editable: false,
-      hidden: true
+      hidden: true,
+      sorter: (a, b) => a.VesselID - b.VesselID,
+      sortOrder: sortedInfo.columnKey === 'VesselID' && sortedInfo.order,
     },
     {
       title: 'Name',
@@ -190,6 +254,30 @@ const ClientsTable = () => {
       sortOrder: sortedInfo.columnKey === 'Name' && sortedInfo.order,
     },
     {
+      title: 'Number',
+      dataIndex: 'Num',
+      key: 'Num',
+      editable: true,
+      sorter: (a, b) => a.Num - b.Num,
+      sortOrder: sortedInfo.columnKey === 'Num' && sortedInfo.order,
+    },
+    {
+      title: 'Client',
+      dataIndex: 'ClientID',
+      key: 'ClientID',
+      editable: true,
+      render: (clientId) => {
+        const client = clients.find(c => c.ClientID === clientId);
+        return client ? client.Name : 'Unknown';
+      },
+      sorter: (a, b) => {
+        const clientA = clients.find(c => c.ClientID === a.ClientID);
+        const clientB = clients.find(c => c.ClientID === b.ClientID);
+        return clientA.Name.localeCompare(clientB.Name);
+      },
+      sortOrder: sortedInfo.columnKey === 'ClientID' && sortedInfo.order,
+    },
+    {
       title: 'Actions',
       dataIndex: 'actions',
       render: (_, record) => {
@@ -197,7 +285,7 @@ const ClientsTable = () => {
         return editable ? (
           <span>
             <Button
-              onClick={() => save(record.ClientID)}
+              onClick={() => save(record.VesselID)}
               style={{ marginRight: 8 }}
               icon={<SaveOutlined />}
             >
@@ -217,7 +305,7 @@ const ClientsTable = () => {
             >
               Edit
             </Button>
-            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.ClientID)}>
+            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.VesselID)}>
               <Button icon={<DeleteOutlined />} type="danger">
                 Delete
               </Button>
@@ -236,19 +324,21 @@ const ClientsTable = () => {
       ...col,
       onCell: (record) => ({
         record,
-        inputType: 'text',
+        inputType: col.dataIndex === 'ClientID' ? 'select' : 
+                   col.dataIndex === 'Num' ? 'number' : 'text',
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
+        clients: clients,
       }),
     };
   }).filter(col => !col.hidden);
 
   return (
     <div>
-      <h2>Clients Table</h2>
+      <h2>Vessel Table</h2>
       <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }} icon={<PlusOutlined />}>
-        Add Client
+        Add Vessel
       </Button>
       <Form form={form} component={false}>
         <Table
@@ -267,8 +357,8 @@ const ClientsTable = () => {
           }}
           loading={loading}
           columns={mergedColumns}
-          dataSource={newClient ? [newClient, ...filteredClients] : filteredClients}
-          rowKey={(record) => record.ClientID}
+          dataSource={newVessel ? [newVessel, ...filteredVessels] : filteredVessels}
+          rowKey={(record) => record.VesselID}
           bordered
           style={{ background: 'white' }}
           onChange={handleChange}
@@ -278,4 +368,4 @@ const ClientsTable = () => {
   );
 };
 
-export default ClientsTable;
+export default VesselTable;

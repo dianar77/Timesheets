@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getProjects, updateProject, deleteProject, createProject, getVessels } from '../services/api';
+import { getProjects, updateProject, deleteProject, createProject, getVessels } from '../../services/api';
 import './ProjectTable.css';
 
 const { Option } = Select;
