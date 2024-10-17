@@ -66,3 +66,22 @@ exports.deleteDiscipline = async (req, res) => {
     res.status(500).json({ message: 'Error deleting discipline', error: error.message });
   }
 };
+
+exports.getDisciplinesForDropdown = async (req, res) => {
+  try {
+    const disciplines = await Discipline.findAll({
+      attributes: ['DisciplineID', 'Name'],
+      order: [['Name', 'ASC']]
+    });
+    
+    const formattedDisciplines = disciplines.map(d => ({
+      id: d.DisciplineID,
+      name: d.Name
+    }));
+    
+    res.json(formattedDisciplines);
+  } catch (error) {
+    console.error('Error fetching disciplines for dropdown:', error);
+    res.status(500).json({ message: 'Error fetching disciplines for dropdown', error: error.message });
+  }
+};

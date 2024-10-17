@@ -8,4 +8,7 @@ router.post('/', disciplineController.createDiscipline);
 router.put('/:id', disciplineController.updateDiscipline);
 router.delete('/:id', disciplineController.deleteDiscipline);
 
+// New route for dropdown info
+router.get('/dropdown/list', disciplineController.getDisciplinesForDropdown);
+
 module.exports = router;

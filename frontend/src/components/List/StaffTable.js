@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getStaff, updateStaff, deleteStaff, createStaff, getDisciplines } from '../../services/api';
+import { getStaff, updateStaff, deleteStaff, createStaff } from '../../services/api';
+import axios from 'axios';
 import './StaffTable.css';
 
 const { Option } = Select;
@@ -20,7 +21,7 @@ const EditableCell = ({
   const inputNode = inputType === 'select' ? (
     <Select>
       {disciplines.map(d => (
-        <Option key={d.DisciplineID} value={d.DisciplineID}>{d.Name}</Option>
+        <Option key={d.id} value={d.id}>{d.name}</Option>
       ))}
     </Select>
   ) : <Input />;
@@ -54,6 +55,7 @@ const StaffTable = () => {
   const [editingKey, setEditingKey] = useState('');
   const [loading, setLoading] = useState(true);
   const [newStaff, setNewStaff] = useState(null);
+  const [selectedDiscipline, setSelectedDiscipline] = useState('');
 
   useEffect(() => {
     fetchStaff();
@@ -63,8 +65,8 @@ const StaffTable = () => {
   const fetchStaff = async () => {
     try {
       setLoading(true);
-      const data = await getStaff();
-      setStaff(data);
+      const response = await getStaff();
+      setStaff(response);
     } catch (error) {
       console.error('Error fetching staff:', error);
       message.error(`Error fetching staff: ${error.message}`);
@@ -75,8 +77,8 @@ const StaffTable = () => {
 
   const fetchDisciplines = async () => {
     try {
-      const disciplineData = await getDisciplines();
-      setDisciplines(disciplineData);
+      const response = await axios.get('/api/disciplines/dropdown/list');
+      setDisciplines(response.data);
     } catch (error) {
       console.error('Error fetching disciplines:', error);
       message.error(`Error fetching discipline data: ${error.message}`);
@@ -144,13 +146,20 @@ const StaffTable = () => {
     form.setFieldsValue(newStaffData);
   };
 
+  const handleDisciplineFilter = (event) => {
+    setSelectedDiscipline(event.target.value);
+  };
+
+  const filteredStaff = selectedDiscipline
+    ? staff.filter(employee => employee.DisciplineID === selectedDiscipline)
+    : staff;
+
   const columns = [
     {
       title: 'Name',
       dataIndex: 'Name',
       key: 'Name',
       editable: true,
-      hidden: true,
     },
     {
       title: 'Personal ID',
@@ -164,8 +173,8 @@ const StaffTable = () => {
       key: 'DisciplineID',
       editable: true,
       render: (disciplineId) => {
-        const discipline = disciplines.find(d => d.DisciplineID === disciplineId);
-        return discipline ? discipline.Name : 'Unknown';
+        const discipline = disciplines.find(d => d.id === disciplineId);
+        return discipline ? discipline.name : 'Unknown';
       },
     },
     {
@@ -222,7 +231,7 @@ const StaffTable = () => {
         disciplines: disciplines,
       }),
     };
-  }).filter(col => !col.hidden);
+  });
 
   return (
     <div className="staff-table">
@@ -230,6 +239,16 @@ const StaffTable = () => {
       <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }} icon={<PlusOutlined />}>
         Add Staff
       </Button>
+      <Select 
+        style={{ width: 200, marginBottom: 16, marginLeft: 16 }}
+        placeholder="Filter by Discipline"
+        onChange={(value) => setSelectedDiscipline(value)}
+        allowClear
+      >
+        {disciplines.map(d => (
+          <Option key={d.id} value={d.id}>{d.name}</Option>
+        ))}
+      </Select>
       <Form form={form} component={false}>
         <Table
           components={{
@@ -239,7 +258,7 @@ const StaffTable = () => {
           }}
           loading={loading}
           columns={mergedColumns}
-          dataSource={newStaff ? [newStaff, ...staff] : staff}
+          dataSource={newStaff ? [newStaff, ...filteredStaff] : filteredStaff}
           rowKey={(record) => record.StaffID}
           bordered
         />
