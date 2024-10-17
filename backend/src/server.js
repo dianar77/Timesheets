@@ -2,12 +2,13 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const timesheetRoutes = require('./routes/timesheetRoutes');
-const staffRoutes = require('./routes/staffRoutes');
 const vesselRoutes = require('./routes/vesselRoutes');
 const clientRoutes = require('./routes/clientRoutes');
 const workOrderRoutes = require('./routes/workOrderRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const disciplineRoutes = require('./routes/disciplineRoutes');
+const staffRoutes = require('./routes/staffRoutes');
+
 
 const app = require('./app');
 const sequelize = require('./config/database');
@@ -24,6 +25,7 @@ app.use('/api/workorders', workOrderRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/disciplines', disciplineRoutes);
+app.use('/api/staff', staffRoutes);
 
 async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);

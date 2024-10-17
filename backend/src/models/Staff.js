@@ -5,23 +5,29 @@ const Staff = sequelize.define('Staff', {
   StaffID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    autoIncrement: true
-  },
-  Name: {
-    type: DataTypes.STRING,
+    autoIncrement: true,
     allowNull: false
   },
+  Name: {
+    type: DataTypes.STRING(200),
+    allowNull: true
+  },
   PersonalID: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(10),
     allowNull: true
   },
   DisciplineID: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
+    references: {
+      model: 'Disciplines',
+      key: 'DisciplineID'
+    }
   }
 }, {
   tableName: 'Staff',
   timestamps: false
 });
+
 
 module.exports = Staff;

@@ -7,7 +7,8 @@ import {
   TeamOutlined, 
   FileOutlined, 
   ProjectOutlined,
-  ToolOutlined
+  ToolOutlined,
+  UserOutlined
 } from '@ant-design/icons';
 import './Sidebar.css';
 
@@ -35,6 +36,9 @@ function Sidebar() {
         </Menu.Item>
         <Menu.Item key="disciplines" icon={<ToolOutlined />}>
           <Link to="/disciplines">Disciplines</Link>
+        </Menu.Item>
+        <Menu.Item key="staff" icon={<UserOutlined />}>
+          <Link to="/staff">Staff</Link>
         </Menu.Item>
       </Menu>
     </div>

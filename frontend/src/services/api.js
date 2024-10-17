@@ -43,12 +43,6 @@ export const updateTimesheet = async (id, timesheetData) => {
 };
 export const deleteTimesheet = (id) => api.delete(`/timesheets/${id}`);
 
-// Staff endpoints
-export const getStaff = async () => {
-  console.log('Fetching staff from:', `${API_URL}/staff`);
-  const response = await axios.get(`${API_URL}/staff`);
-  return response.data;
-};
 
 export const getStaffById = (id) => api.get(`/staff/${id}`);
 
@@ -170,6 +164,28 @@ export const updateDiscipline = async (id, discipline) => {
 
 export const deleteDiscipline = async (id) => {
   const response = await axios.delete(`/api/disciplines/${id}`);
+  return response.data;
+};
+
+// Add these functions to the existing api.js file
+
+export const getStaff = async () => {
+  const response = await axios.get('/api/staff');
+  return response.data;
+};
+
+export const createStaff = async (staff) => {
+  const response = await axios.post('/api/staff', staff);
+  return response.data;
+};
+
+export const updateStaff = async (id, staff) => {
+  const response = await axios.put(`/api/staff/${id}`, staff);
+  return response.data;
+};
+
+export const deleteStaff = async (id) => {
+  const response = await axios.delete(`/api/staff/${id}`);
   return response.data;
 };
 

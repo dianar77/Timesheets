@@ -1,4 +1,4 @@
-const Staff = require('../models/Staff');
+const Staff = require('../models/staff');
 
 exports.getAllStaff = async (req, res) => {
   try {
@@ -19,7 +19,7 @@ exports.getStaffById = async (req, res) => {
       res.status(404).json({ message: 'Staff not found' });
     }
   } catch (error) {
-    console.error('Error fetching staff by ID:', error);
+    console.error('Error fetching staff:', error);
     res.status(500).json({ message: 'Error fetching staff', error: error.message });
   }
 };
@@ -57,7 +57,7 @@ exports.deleteStaff = async (req, res) => {
       where: { StaffID: req.params.id }
     });
     if (deleted) {
-      res.status(204).send();
+      res.json({ message: 'Staff deleted successfully' });
     } else {
       res.status(404).json({ message: 'Staff not found' });
     }

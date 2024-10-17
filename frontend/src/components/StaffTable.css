@@ -1,0 +1,25 @@
+.staff-table {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.staff-table .ant-table-thead > tr > th {
+  background-color: #f0f2f5;
+  color: #1890ff;
+}
+
+.staff-table .ant-table-tbody > tr > td {
+  padding: 16px;
+}
+
+.staff-table .ant-btn {
+  margin-right: 8px;
+}
+
+.staff-table .ant-form-item {
+  margin-bottom: 0;
+}
+
+.staff-table h2 {
+  margin-bottom: 16px;
+}
