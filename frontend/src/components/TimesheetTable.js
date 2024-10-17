@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Input, Button, Popconfirm, Form, message, DatePicker, InputNumber } from 'antd';
+import { Table, Input, Button, Popconfirm, Form, message, DatePicker, InputNumber, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getTimesheets, updateTimesheet, deleteTimesheet, createTimesheet } from '../services/api';
+import { getTimesheets, updateTimesheet, deleteTimesheet, createTimesheet, getStaff, getWorkOrders } from '../services/api';
 import moment from 'moment';
 import './TimesheetTable.css';
+
+const { Option } = Select;
 
 const EditableCell = ({
   editing,
@@ -13,9 +15,41 @@ const EditableCell = ({
   record,
   index,
   children,
+  staff,
+  workOrders,
   ...restProps
 }) => {
-  const inputNode = inputType === 'number' ? <InputNumber /> : inputType === 'date' ? <DatePicker /> : <Input />;
+  let inputNode;
+  switch (inputType) {
+    case 'number':
+      inputNode = <InputNumber />;
+      break;
+    case 'date':
+      inputNode = <DatePicker />;
+      break;
+    case 'select':
+      if (dataIndex === 'StaffID') {
+        inputNode = (
+          <Select>
+            {staff.map(s => (
+              <Option key={s.StaffID} value={s.StaffID}>{s.Name}</Option>
+            ))}
+          </Select>
+        );
+      } else if (dataIndex === 'WorkOrderID') {
+        inputNode = (
+          <Select>
+            {workOrders.map(wo => (
+              <Option key={wo.WorkOrderID} value={wo.WorkOrderID}>{`${wo.TaskNumber} - ${wo.Description}`}</Option>
+            ))}
+          </Select>
+        );
+      }
+      break;
+    default:
+      inputNode = <Input />;
+  }
+  
   return (
     <td {...restProps}>
       {editing ? (
@@ -41,34 +75,30 @@ const EditableCell = ({
 const TimesheetTable = () => {
   const [form] = Form.useForm();
   const [timesheets, setTimesheets] = useState([]);
+  const [staff, setStaff] = useState([]);
+  const [workOrders, setWorkOrders] = useState([]);
   const [editingKey, setEditingKey] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchTimesheets();
+    fetchStaff();
+    fetchWorkOrders();
   }, []);
 
   const fetchTimesheets = async () => {
     try {
       setLoading(true);
       const data = await getTimesheets();
-      console.log('Raw data from API:', data);
-      console.log('Data type:', typeof data);
-      console.log('Is Array:', Array.isArray(data));
+      console.log('Timesheet data in component:', data);
       if (Array.isArray(data)) {
         setTimesheets(data);
       } else if (data && typeof data === 'object') {
-        console.log('Object keys:', Object.keys(data));
-        if (data.timesheets && Array.isArray(data.timesheets)) {
-          setTimesheets(data.timesheets);
+        const timesheetArray = data.timesheets || Object.values(data).find(Array.isArray);
+        if (timesheetArray) {
+          setTimesheets(timesheetArray);
         } else {
-          // Try to find any array in the response
-          const arrayData = Object.values(data).find(Array.isArray);
-          if (arrayData) {
-            setTimesheets(arrayData);
-          } else {
-            throw new Error('No array found in the response');
-          }
+          throw new Error('No timesheet array found in the response');
         }
       } else {
         throw new Error('Unexpected data format');
@@ -78,6 +108,40 @@ const TimesheetTable = () => {
       message.error(`Error fetching timesheets: ${error.message}`);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchStaff = async () => {
+    try {
+      const staffData = await getStaff();
+      console.log('Staff data received:', staffData);
+      setStaff(staffData);
+    } catch (error) {
+      console.error('Error fetching staff:', error);
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        console.error('Error response:', error.response.data);
+        console.error('Error status:', error.response.status);
+        console.error('Error headers:', error.response.headers);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error('Error request:', error.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error('Error message:', error.message);
+      }
+      message.error(`Error fetching staff data: ${error.message}`);
+    }
+  };
+
+  const fetchWorkOrders = async () => {
+    try {
+      const workOrderData = await getWorkOrders();
+      setWorkOrders(workOrderData);
+    } catch (error) {
+      console.error('Error fetching work orders:', error);
+      message.error('Error fetching work order data');
     }
   };
 
@@ -155,12 +219,20 @@ const TimesheetTable = () => {
       dataIndex: 'StaffID',
       key: 'StaffID',
       editable: true,
+      render: (staffId) => {
+        const staffMember = staff.find(s => s.StaffID === staffId);
+        return staffMember ? staffMember.Name : 'Unknown';
+      },
     },
     {
       title: 'Work Order',
       dataIndex: 'WorkOrderID',
       key: 'WorkOrderID',
       editable: true,
+      render: (workOrderId) => {
+        const workOrder = workOrders.find(wo => wo.WorkOrderID === workOrderId);
+        return workOrder ? `${workOrder.TaskNumber} - ${workOrder.Description}` : 'Unknown';
+      },
     },
     {
       title: 'Date',
@@ -222,10 +294,14 @@ const TimesheetTable = () => {
       ...col,
       onCell: (record) => ({
         record,
-        inputType: col.dataIndex === 'date' ? 'date' : col.dataIndex === 'hours' ? 'number' : 'text',
+        inputType: col.dataIndex === 'Date' ? 'date' : 
+                   col.dataIndex === 'Hours' ? 'number' : 
+                   col.dataIndex === 'StaffID' || col.dataIndex === 'WorkOrderID' ? 'select' : 'text',
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
+        staff: staff,
+        workOrders: workOrders,
       }),
     };
   });

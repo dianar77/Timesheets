@@ -1,31 +1,27 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Timesheet = sequelize.define('Timesheet', {
-  TimesheetID: {
+const WorkOrder = sequelize.define('WorkOrder', {
+  WorkOrderID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  StaffID: {
+  TaskNumber: {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  WorkOrderID: {
+  Description: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  ProjectID: {
     type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  Date: {
-    type: DataTypes.DATEONLY,
-    allowNull: false
-  },
-  Hours: {
-    type: DataTypes.FLOAT,
     allowNull: false
   }
 }, {
-  tableName: 'Timesheets',
+  tableName: 'WorkOrders',
   timestamps: false
 });
 
-module.exports = Timesheet;
+module.exports = WorkOrder;

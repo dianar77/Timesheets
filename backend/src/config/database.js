@@ -1,25 +1,25 @@
-const sql = require('mssql');
+const { Sequelize } = require('sequelize');
 
-const config = {
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  server: process.env.DB_SERVER,
-  database: process.env.DB_NAME,
-  options: {
-    encrypt: true,
-    trustServerCertificate: true,
+const sequelize = new Sequelize('Timesheets', 'sa', 'sapassword', {
+  host: 'gooding20',
+  port: 1433,
+  dialect: 'mssql',
+  dialectOptions: {
+    options: {
+      useUTC: false,
+      dateFirst: 1,
+      encrypt: false
+    },
   },
-};
+  logging: console.log // This will log all SQL queries
+});
 
-const poolPromise = new sql.ConnectionPool(config)
-  .connect()
-  .then(pool => {
-    console.log('Connected to MSSQL');
-    return pool;
-  })
-  .catch(err => console.log('Database Connection Failed! Bad Config: ', err));
+// Test the connection
+sequelize.authenticate()
+  .then(() => console.log('Database connection has been established successfully.'))
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+    console.error('Error details:', err.original);
+  });
 
-module.exports = {
-  sql,
-  poolPromise
-};
+module.exports = sequelize;

@@ -1,30 +1,27 @@
-const { sql, poolPromise } = require('../config/database');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-class Staff {
-  static async getAll() {
-    try {
-      const pool = await poolPromise;
-      const result = await pool.request().query('SELECT * FROM Staff');
-      return result.recordset;
-    } catch (error) {
-      console.error('Error in getAll:', error);
-      throw error;
-    }
+const Staff = sequelize.define('Staff', {
+  StaffID: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  Name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  PersonalID: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  DisciplineID: {
+    type: DataTypes.INTEGER,
+    allowNull: true
   }
-
-  static async getById(id) {
-    try {
-      const pool = await poolPromise;
-      const result = await pool
-        .request()
-        .input('id', sql.Int, id)
-        .query('SELECT * FROM Staff WHERE StaffID = @id');
-      return result.recordset[0];
-    } catch (error) {
-      console.error('Error in getById:', error);
-      throw error;
-    }
-  }
-}
+}, {
+  tableName: 'Staff',
+  timestamps: false
+});
 
 module.exports = Staff;

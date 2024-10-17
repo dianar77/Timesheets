@@ -7,18 +7,38 @@ const api = axios.create({
 });
 
 // Timesheet endpoints
-export const getTimesheets = () => api.get('/timesheets');
+export const getTimesheets = async () => {
+  try {
+    console.log('Fetching timesheets from:', `${API_URL}/timesheets`);
+    const response = await api.get('/timesheets');
+    console.log('Timesheet data received:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching timesheets:', error);
+    throw error;
+  }
+};
+
 export const getTimesheetById = (id) => api.get(`/timesheets/${id}`);
 export const createTimesheet = (data) => api.post('/timesheets', data);
 export const updateTimesheet = (id, data) => api.put(`/timesheets/${id}`, data);
 export const deleteTimesheet = (id) => api.delete(`/timesheets/${id}`);
 
 // Staff endpoints
-export const getStaff = () => api.get('/staff');
+export const getStaff = async () => {
+  console.log('Fetching staff from:', `${API_URL}/staff`);
+  const response = await axios.get(`${API_URL}/staff`);
+  return response.data;
+};
+
 export const getStaffById = (id) => api.get(`/staff/${id}`);
 
 // Work Order endpoints
-export const getWorkOrders = () => api.get('/workorders');
+export const getWorkOrders = async () => {
+  const response = await axios.get('/api/workorders');
+  return response.data;
+};
+
 export const getWorkOrderById = (id) => api.get(`/workorders/${id}`);
 
 // Project endpoints
