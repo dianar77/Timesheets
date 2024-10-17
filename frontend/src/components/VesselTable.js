@@ -64,6 +64,12 @@ const VesselTable = () => {
   const [editingKey, setEditingKey] = useState('');
   const [loading, setLoading] = useState(true);
   const [newVessel, setNewVessel] = useState(null);
+  const [filters, setFilters] = useState({
+    name: '',
+    number: '',
+    client: null,
+  });
+  const [sortedInfo, setSortedInfo] = useState({});
 
   useEffect(() => {
     fetchVesselData();
@@ -177,6 +183,58 @@ const VesselTable = () => {
     form.setFieldsValue(newVesselData);
   };
 
+  const handleFilterChange = (filterType, value) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [filterType]: value
+    }));
+  };
+
+  const filteredVessels = vessels.filter(vessel => {
+    return (
+      vessel.Name.toLowerCase().includes(filters.name.toLowerCase()) &&
+      (filters.number === '' || vessel.Num.toString().includes(filters.number)) &&
+      (!filters.client || vessel.ClientID === filters.client)
+    );
+  });
+
+  const handleChange = (pagination, filters, sorter) => {
+    console.log('Various parameters', pagination, filters, sorter);
+    setSortedInfo(sorter);
+  };
+
+  const FilterHeader = () => (
+    <tr className="filter-row">
+      <th>
+        <Input
+          placeholder="Filter by Name"
+          value={filters.name}
+          onChange={(e) => handleFilterChange('name', e.target.value)}
+        />
+      </th>
+      <th>
+        <Input
+          placeholder="Filter by Number"
+          value={filters.number}
+          onChange={(e) => handleFilterChange('number', e.target.value)}
+        />
+      </th>
+      <th>
+        <Select
+          style={{ width: '100%' }}
+          placeholder="Filter by Client"
+          onChange={(value) => handleFilterChange('client', value)}
+          allowClear
+        >
+          {clients.map(client => (
+            <Option key={client.ClientID} value={client.ClientID}>{client.Name}</Option>
+          ))}
+        </Select>
+      </th>
+      <th></th> {/* Empty cell for Actions column */}
+    </tr>
+  );
+
   const columns = [
     {
       title: 'ID',
@@ -276,13 +334,22 @@ const VesselTable = () => {
             body: {
               cell: EditableCell,
             },
+            header: {
+              wrapper: ({ children }) => (
+                <thead>
+                  <FilterHeader />
+                  {children}
+                </thead>
+              ),
+            },
           }}
           loading={loading}
           columns={mergedColumns}
-          dataSource={newVessel ? [newVessel, ...vessels] : vessels}
+          dataSource={newVessel ? [newVessel, ...filteredVessels] : filteredVessels}
           rowKey={(record) => record.VesselID}
           bordered
           style={{ background: 'white' }}
+          onChange={handleChange}
         />
       </Form>
     </div>
