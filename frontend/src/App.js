@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import TimesheetTable from './components/TimesheetTable';
 import VesselTable from './components/VesselTable';
+import ClientsTable from './components/ClientsTable';
 
 import './App.css';
 
@@ -14,7 +15,7 @@ function App() {
       <div className="main-content">
         {activeComponent === 'timesheets' && <TimesheetTable />}
         {activeComponent === 'vessels' && <VesselTable />}
-
+        {activeComponent === 'clients' && <ClientsTable />}
       </div>
     </div>
   );

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Input, Button, Popconfirm, Form, message, InputNumber, Select } from 'antd';
+import { Table, Input, Button, Popconfirm, Form, message } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { fetchVessels, createVessel, updateVessel, deleteVessel, getClients } from '../services/api';
-import './VesselTable.css';
-
-const { Option } = Select;
+import { getClients, createClient, updateClient, deleteClient } from '../services/api';
+import './ClientsTable.css';
 
 const EditableCell = ({
   editing,
@@ -14,26 +12,9 @@ const EditableCell = ({
   record,
   index,
   children,
-  clients,
   ...restProps
 }) => {
-  let inputNode;
-  switch (inputType) {
-    case 'number':
-      inputNode = <InputNumber />;
-      break;
-    case 'select':
-      inputNode = (
-        <Select>
-          {clients.map(client => (
-            <Option key={client.ClientID} value={client.ClientID}>{client.Name}</Option>
-          ))}
-        </Select>
-      );
-      break;
-    default:
-      inputNode = <Input />;
-  }
+  const inputNode = <Input />;
   
   return (
     <td {...restProps}>
@@ -57,96 +38,80 @@ const EditableCell = ({
   );
 };
 
-const VesselTable = () => {
+const ClientsTable = () => {
   const [form] = Form.useForm();
-  const [vessels, setVessels] = useState([]);
   const [clients, setClients] = useState([]);
   const [editingKey, setEditingKey] = useState('');
   const [loading, setLoading] = useState(true);
-  const [newVessel, setNewVessel] = useState(null);
+  const [newClient, setNewClient] = useState(null);
 
   useEffect(() => {
-    fetchVesselData();
-    fetchClientData();
+    fetchClients();
   }, []);
 
   useEffect(() => {
     if (editingKey === '') {
-      fetchVesselData();
+      fetchClients();
     }
   }, [editingKey]);
 
-  const fetchVesselData = async () => {
+  const fetchClients = async () => {
     try {
       setLoading(true);
-      const data = await fetchVessels();
+      const data = await getClients();
       if (Array.isArray(data)) {
-        setVessels(data);
+        setClients(data);
       } else {
         throw new Error('Unexpected data format');
       }
     } catch (error) {
-      console.error('Error fetching vessels:', error);
-      message.error(`Error fetching vessels: ${error.message}`);
+      console.error('Error fetching clients:', error);
+      message.error(`Error fetching clients: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchClientData = async () => {
-    try {
-      const clientData = await getClients();
-      setClients(clientData);
-    } catch (error) {
-      console.error('Error fetching clients:', error);
-      message.error(`Error fetching client data: ${error.message}`);
-    }
-  };
-
-  const isEditing = (record) => record.VesselID === editingKey;
+  const isEditing = (record) => record.ClientID === editingKey;
 
   const edit = (record) => {
     form.setFieldsValue({
       ...record,
       Name: record.Name,
-      Num: record.Num,
-      ClientID: record.ClientID
     });
-    setEditingKey(record.VesselID);
+    setEditingKey(record.ClientID);
   };
 
   const cancel = () => {
     setEditingKey('');
-    if (newVessel) {
-      setNewVessel(null);
+    if (newClient) {
+      setNewClient(null);
     }
   };
 
   const save = async (key) => {
     try {
       const row = await form.validateFields();
-      let updatedVessel;
+      let updatedClient;
       
       if (key === 'new') {
-        updatedVessel = await createVessel(row);
-        setVessels(prev => [updatedVessel, ...prev]);
-        setNewVessel(null);
+        updatedClient = await createClient(row);
+        setClients(prev => [updatedClient, ...prev]);
+        setNewClient(null);
       } else {
         const updatedItem = { 
           ...row, 
-          VesselID: key,
-          ClientID: Number(row.ClientID),
-          Num: Number(row.Num)
+          ClientID: key,
         };
-        updatedVessel = await updateVessel(key, updatedItem);
-        setVessels(prev => prev.map(item => 
-          item.VesselID === key ? updatedVessel : item
+        updatedClient = await updateClient(key, updatedItem);
+        setClients(prev => prev.map(item => 
+          item.ClientID === key ? updatedClient : item
         ));
       }
       
       setEditingKey('');
-      message.success('Vessel saved successfully');
-      setVessels(prev => [...prev]);
+      message.success('Client saved successfully');
+      setClients(prev => [...prev]);
     } catch (errInfo) {
       console.error('Save failed:', errInfo);
       message.error('Failed to save: ' + errInfo.message);
@@ -155,33 +120,31 @@ const VesselTable = () => {
 
   const handleDelete = async (key) => {
     try {
-      await deleteVessel(key);
-      const newData = vessels.filter((item) => item.VesselID !== key);
-      setVessels(newData);
-      message.success('Vessel deleted successfully');
+      await deleteClient(key);
+      const newData = clients.filter((item) => item.ClientID !== key);
+      setClients(newData);
+      message.success('Client deleted successfully');
     } catch (error) {
-      console.error('Error deleting vessel:', error);
-      message.error('Error deleting vessel: ' + error.message);
+      console.error('Error deleting client:', error);
+      message.error('Error deleting client: ' + error.message);
     }
   };
 
   const handleAdd = () => {
-    const newVesselData = {
-      VesselID: 'new',
+    const newClientData = {
+      ClientID: 'new',
       Name: '',
-      Num: null,
-      ClientID: null,
     };
-    setNewVessel(newVesselData);
+    setNewClient(newClientData);
     setEditingKey('new');
-    form.setFieldsValue(newVesselData);
+    form.setFieldsValue(newClientData);
   };
 
   const columns = [
     {
       title: 'ID',
-      dataIndex: 'VesselID',
-      key: 'VesselID',
+      dataIndex: 'ClientID',
+      key: 'ClientID',
       editable: false,
     },
     {
@@ -191,22 +154,6 @@ const VesselTable = () => {
       editable: true,
     },
     {
-      title: 'Number',
-      dataIndex: 'Num',
-      key: 'Num',
-      editable: true,
-    },
-    {
-      title: 'Client',
-      dataIndex: 'ClientID',
-      key: 'ClientID',
-      editable: true,
-      render: (clientId) => {
-        const client = clients.find(c => c.ClientID === clientId);
-        return client ? client.Name : 'Unknown';
-      },
-    },
-    {
       title: 'Actions',
       dataIndex: 'actions',
       render: (_, record) => {
@@ -214,7 +161,7 @@ const VesselTable = () => {
         return editable ? (
           <span>
             <Button
-              onClick={() => save(record.VesselID)}
+              onClick={() => save(record.ClientID)}
               style={{ marginRight: 8 }}
               icon={<SaveOutlined />}
             >
@@ -234,7 +181,7 @@ const VesselTable = () => {
             >
               Edit
             </Button>
-            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.VesselID)}>
+            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.ClientID)}>
               <Button icon={<DeleteOutlined />} type="danger">
                 Delete
               </Button>
@@ -253,21 +200,19 @@ const VesselTable = () => {
       ...col,
       onCell: (record) => ({
         record,
-        inputType: col.dataIndex === 'ClientID' ? 'select' : 
-                   col.dataIndex === 'Num' ? 'number' : 'text',
+        inputType: 'text',
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
-        clients: clients,
       }),
     };
   });
 
   return (
     <div>
-      <h2>Vessel Table</h2>
+      <h2>Clients Table</h2>
       <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }} icon={<PlusOutlined />}>
-        Add Vessel
+        Add Client
       </Button>
       <Form form={form} component={false}>
         <Table
@@ -278,8 +223,8 @@ const VesselTable = () => {
           }}
           loading={loading}
           columns={mergedColumns}
-          dataSource={newVessel ? [newVessel, ...vessels] : vessels}
-          rowKey={(record) => record.VesselID}
+          dataSource={newClient ? [newClient, ...clients] : clients}
+          rowKey={(record) => record.ClientID}
           bordered
           style={{ background: 'white' }}
         />
@@ -288,4 +233,4 @@ const VesselTable = () => {
   );
 };
 
-export default VesselTable;
+export default ClientsTable;

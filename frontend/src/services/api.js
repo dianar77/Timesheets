@@ -66,19 +66,10 @@ export const getProjects = () => api.get('/projects');
 export const getProjectById = (id) => api.get(`/projects/${id}`);
 
 // Vessel endpoints
-export const getVessels = async () => {
-  try {
-    console.log('Fetching vessels from:', `${API_URL}/vessels`);
-    const response = await axios.get(`${API_URL}/vessels`);
-    console.log('Vessel data received:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching vessels:', error);
-    throw error;
-  }
+export const fetchVessels = async () => {
+  const response = await api.get('/vessels');
+  return response.data;
 };
-
-export const getVesselById = (id) => api.get(`/vessels/${id}`);
 
 export const createVessel = async (vesselData) => {
   const response = await api.post('/vessels', vesselData);
@@ -90,29 +81,37 @@ export const updateVessel = async (id, vesselData) => {
   return response.data;
 };
 
-export const deleteVessel = (id) => api.delete(`/vessels/${id}`);
+export const deleteVessel = async (id) => {
+  const response = await api.delete(`/vessels/${id}`);
+  return response.data;
+};
 
 // Client endpoints
 export const getClients = async () => {
   try {
     console.log('Fetching clients from:', `${API_URL}/clients`);
-    const response = await axios.get(`${API_URL}/clients`);
+    const response = await api.get('/clients');
     console.log('Client data received:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching clients:', error);
-    if (error.response) {
-      console.error('Error response:', error.response.data);
-      console.error('Error status:', error.response.status);
-    } else if (error.request) {
-      console.error('Error request:', error.request);
-    } else {
-      console.error('Error message:', error.message);
-    }
     throw error;
   }
 };
 
-export const getClientById = (id) => api.get(`/clients/${id}`);
+export const createClient = async (clientData) => {
+  const response = await api.post('/clients', clientData);
+  return response.data;
+};
+
+export const updateClient = async (id, clientData) => {
+  const response = await api.put(`/clients/${id}`, clientData);
+  return response.data;
+};
+
+export const deleteClient = async (id) => {
+  const response = await api.delete(`/clients/${id}`);
+  return response.data;
+};
 
 export default api;
