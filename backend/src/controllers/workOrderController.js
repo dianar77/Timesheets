@@ -1,19 +1,14 @@
-const WorkOrder = require('../models/WorkOrder');
+const sql = require('mssql');
+const config = require('../config/dbConfig');
 
 exports.getAllWorkOrders = async (req, res) => {
   try {
-    console.log('Attempting to fetch all work orders');
-    const workOrders = await WorkOrder.findAll();
-    console.log('Work orders fetched:', workOrders);
-    res.json(workOrders);
+    let pool = await sql.connect(config);
+    let result = await pool.request().query('SELECT * FROM WorkOrders');
+    res.json(result.recordset);
   } catch (error) {
     console.error('Error fetching work orders:', error);
-    console.error('Error stack:', error.stack);
-    res.status(500).json({ 
-      message: 'Error fetching work orders', 
-      error: error.message,
-      stack: error.stack
-    });
+    res.status(500).json({ message: 'Error fetching work orders', error: error.message });
   }
 };
 
@@ -33,8 +28,14 @@ exports.getWorkOrderById = async (req, res) => {
 
 exports.createWorkOrder = async (req, res) => {
   try {
-    const newWorkOrder = await WorkOrder.create(req.body);
-    res.status(201).json(newWorkOrder);
+    const { Task, Description, ProjectID } = req.body;
+    let pool = await sql.connect(config);
+    let result = await pool.request()
+      .input('Task', sql.Int, Task)
+      .input('Description', sql.NVarChar(2000), Description)
+      .input('ProjectID', sql.Int, ProjectID)
+      .query('INSERT INTO WorkOrders (Task#, Description, ProjectID) OUTPUT INSERTED.* VALUES (@Task, @Description, @ProjectID)');
+    res.status(201).json(result.recordset[0]);
   } catch (error) {
     console.error('Error creating work order:', error);
     res.status(500).json({ message: 'Error creating work order', error: error.message });
@@ -43,15 +44,19 @@ exports.createWorkOrder = async (req, res) => {
 
 exports.updateWorkOrder = async (req, res) => {
   try {
-    const [updated] = await WorkOrder.update(req.body, {
-      where: { WorkOrderID: req.params.id }
-    });
-    if (updated) {
-      const updatedWorkOrder = await WorkOrder.findByPk(req.params.id);
-      res.json(updatedWorkOrder);
-    } else {
-      res.status(404).json({ message: 'Work order not found' });
+    const { Task, Description, ProjectID } = req.body;
+    const { id } = req.params;
+    let pool = await sql.connect(config);
+    let result = await pool.request()
+      .input('WorkOrderID', sql.Int, id)
+      .input('Task', sql.Int, Task)
+      .input('Description', sql.NVarChar(2000), Description)
+      .input('ProjectID', sql.Int, ProjectID)
+      .query('UPDATE WorkOrders SET Task# = @Task, Description = @Description, ProjectID = @ProjectID OUTPUT INSERTED.* WHERE WorkOrderID = @WorkOrderID');
+    if (result.rowsAffected[0] === 0) {
+      return res.status(404).json({ message: 'Work Order not found' });
     }
+    res.json(result.recordset[0]);
   } catch (error) {
     console.error('Error updating work order:', error);
     res.status(500).json({ message: 'Error updating work order', error: error.message });
@@ -60,14 +65,15 @@ exports.updateWorkOrder = async (req, res) => {
 
 exports.deleteWorkOrder = async (req, res) => {
   try {
-    const deleted = await WorkOrder.destroy({
-      where: { WorkOrderID: req.params.id }
-    });
-    if (deleted) {
-      res.status(204).send();
-    } else {
-      res.status(404).json({ message: 'Work order not found' });
+    const { id } = req.params;
+    let pool = await sql.connect(config);
+    let result = await pool.request()
+      .input('WorkOrderID', sql.Int, id)
+      .query('DELETE FROM WorkOrders WHERE WorkOrderID = @WorkOrderID');
+    if (result.rowsAffected[0] === 0) {
+      return res.status(404).json({ message: 'Work Order not found' });
     }
+    res.json({ message: 'Work Order deleted successfully' });
   } catch (error) {
     console.error('Error deleting work order:', error);
     res.status(500).json({ message: 'Error deleting work order', error: error.message });

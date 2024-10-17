@@ -1,32 +1,34 @@
 import React from 'react';
+import { Menu } from 'antd';
+import { Link } from 'react-router-dom';
+import { 
+  OrderedListOutlined, 
+  ClockCircleOutlined, 
+  TeamOutlined, 
+  FileOutlined 
+} from '@ant-design/icons';
 import './Sidebar.css';
 
-function Sidebar({ activeComponent, setActiveComponent }) {
+function Sidebar() {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
         <h2>Dashboard</h2>
       </div>
-      <nav className="sidebar-nav">
-        <button
-          className={`sidebar-button ${activeComponent === 'vessels' ? 'active' : ''}`}
-          onClick={() => setActiveComponent('vessels')}
-        >
-          Vessels
-        </button>
-        <button
-          className={`sidebar-button ${activeComponent === 'timesheets' ? 'active' : ''}`}
-          onClick={() => setActiveComponent('timesheets')}
-        >
-          Timesheets
-        </button>
-        <button
-          className={`sidebar-button ${activeComponent === 'clients' ? 'active' : ''}`}
-          onClick={() => setActiveComponent('clients')}
-        >
-          Clients
-        </button>
-      </nav>
+      <Menu mode="inline" theme="dark">
+        <Menu.Item key="vessels" icon={<OrderedListOutlined />}>
+          <Link to="/vessels">Vessels</Link>
+        </Menu.Item>
+        <Menu.Item key="timesheets" icon={<ClockCircleOutlined />}>
+          <Link to="/timesheets">Timesheets</Link>
+        </Menu.Item>
+        <Menu.Item key="clients" icon={<TeamOutlined />}>
+          <Link to="/clients">Clients</Link>
+        </Menu.Item>
+        <Menu.Item key="workorders" icon={<FileOutlined />}>
+          <Link to="/workorders">Work Orders</Link>
+        </Menu.Item>
+      </Menu>
     </div>
   );
 }

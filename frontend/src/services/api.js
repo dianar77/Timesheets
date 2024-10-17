@@ -54,15 +54,33 @@ export const getStaffById = (id) => api.get(`/staff/${id}`);
 
 // Work Order endpoints
 export const getWorkOrders = async () => {
-  console.log('Fetching work orders from:', `${API_URL}/workorders`);
-  const response = await axios.get(`${API_URL}/workorders`);
+  const response = await axios.get('/api/workorders');
+  return response.data;
+};
+
+export const createWorkOrder = async (workOrder) => {
+  const response = await axios.post('/api/workorders', workOrder);
+  return response.data;
+};
+
+export const updateWorkOrder = async (id, workOrder) => {
+  const response = await axios.put(`/api/workorders/${id}`, workOrder);
+  return response.data;
+};
+
+export const deleteWorkOrder = async (id) => {
+  const response = await axios.delete(`/api/workorders/${id}`);
   return response.data;
 };
 
 export const getWorkOrderById = (id) => api.get(`/workorders/${id}`);
 
 // Project endpoints
-export const getProjects = () => api.get('/projects');
+export const getProjects = async () => {
+  const response = await axios.get('/api/projects');
+  return response.data;
+};
+
 export const getProjectById = (id) => api.get(`/projects/${id}`);
 
 // Vessel endpoints
