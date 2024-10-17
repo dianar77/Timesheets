@@ -287,7 +287,10 @@ const TimesheetTable = () => {
       sorter: (a, b) => {
         const woA = workOrders.find(wo => wo.WorkOrderID === a.WorkOrderID);
         const woB = workOrders.find(wo => wo.WorkOrderID === b.WorkOrderID);
-        return woA.Task.localeCompare(woB.Task);
+        if (!woA || !woB) return 0;
+        const taskA = woA.Task ? woA.Task.toString() : '';
+        const taskB = woB.Task ? woB.Task.toString() : '';
+        return taskA.localeCompare(taskB);
       },
       sortOrder: sortedInfo.columnKey === 'WorkOrderID' && sortedInfo.order,
     },
