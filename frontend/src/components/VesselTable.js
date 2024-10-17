@@ -183,6 +183,7 @@ const VesselTable = () => {
       dataIndex: 'VesselID',
       key: 'VesselID',
       editable: false,
+      hidden: true
     },
     {
       title: 'Name',
@@ -261,7 +262,7 @@ const VesselTable = () => {
         clients: clients,
       }),
     };
-  });
+  }).filter(col => !col.hidden);
 
   return (
     <div>

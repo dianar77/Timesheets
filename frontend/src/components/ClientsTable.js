@@ -146,6 +146,7 @@ const ClientsTable = () => {
       dataIndex: 'ClientID',
       key: 'ClientID',
       editable: false,
+      hidden: true
     },
     {
       title: 'Name',
@@ -206,7 +207,8 @@ const ClientsTable = () => {
         editing: isEditing(record),
       }),
     };
-  });
+  }).filter(col => !col.hidden);
+
 
   return (
     <div>

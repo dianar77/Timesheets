@@ -251,6 +251,7 @@ const TimesheetTable = () => {
       dataIndex: 'TimesheetID',
       key: 'TimesheetID',
       editable: false,
+      hidden: true
     },
     {
       title: 'Staff',
@@ -355,7 +356,7 @@ const TimesheetTable = () => {
         workOrders: workOrders,
       }),
     };
-  });
+  }).filter(col => !col.hidden);
 
   useEffect(() => {
     console.log('Editing key changed:', editingKey);
