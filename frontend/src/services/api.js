@@ -81,6 +81,21 @@ export const getProjects = async () => {
   return response.data;
 };
 
+export const createProject = async (project) => {
+  const response = await axios.post('/api/projects', project);
+  return response.data;
+};
+
+export const updateProject = async (id, project) => {
+  const response = await axios.put(`/api/projects/${id}`, project);
+  return response.data;
+};
+
+export const deleteProject = async (id) => {
+  const response = await axios.delete(`/api/projects/${id}`);
+  return response.data;
+};
+
 export const getProjectById = (id) => api.get(`/projects/${id}`);
 
 // Vessel endpoints
@@ -129,6 +144,11 @@ export const updateClient = async (id, clientData) => {
 
 export const deleteClient = async (id) => {
   const response = await api.delete(`/clients/${id}`);
+  return response.data;
+};
+
+export const getVessels = async () => {
+  const response = await axios.get('/api/vessels');
   return response.data;
 };
 

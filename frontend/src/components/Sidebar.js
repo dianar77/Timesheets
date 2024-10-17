@@ -5,7 +5,8 @@ import {
   OrderedListOutlined, 
   ClockCircleOutlined, 
   TeamOutlined, 
-  FileOutlined 
+  FileOutlined, 
+  ProjectOutlined 
 } from '@ant-design/icons';
 import './Sidebar.css';
 
@@ -27,6 +28,9 @@ function Sidebar() {
         </Menu.Item>
         <Menu.Item key="workorders" icon={<FileOutlined />}>
           <Link to="/workorders">Work Orders</Link>
+        </Menu.Item>
+        <Menu.Item key="projects" icon={<ProjectOutlined />}>
+          <Link to="/projects">Projects</Link>
         </Menu.Item>
       </Menu>
     </div>
