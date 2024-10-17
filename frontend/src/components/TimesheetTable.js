@@ -96,10 +96,14 @@ const TimesheetTable = () => {
     try {
       const row = await form.validateFields();
       const newData = [...timesheets];
-      const index = newData.findIndex((item) => key === item.id);
+      const index = newData.findIndex((item) => key === item.TimesheetID);
       if (index > -1) {
         const item = newData[index];
-        const updatedItem = { ...item, ...row, date: row.date.format('YYYY-MM-DD') };
+        const updatedItem = { 
+          ...item, 
+          ...row, 
+          Date: row.Date.format('YYYY-MM-DD') 
+        };
         await updateTimesheet(key, updatedItem);
         newData.splice(index, 1, updatedItem);
         setTimesheets(newData);
@@ -124,9 +128,10 @@ const TimesheetTable = () => {
 
   const handleAdd = async () => {
     const newTimesheet = {
-      date: moment().format('YYYY-MM-DD'),
-      hours: 0,
-      description: '',
+      StaffID: null,  // You might want to set a default value or leave it null
+      WorkOrderID: null,  // You might want to set a default value or leave it null
+      Date: moment().format('YYYY-MM-DD'),
+      Hours: 0,
     };
     try {
       const addedTimesheet = await createTimesheet(newTimesheet);
@@ -140,22 +145,34 @@ const TimesheetTable = () => {
 
   const columns = [
     {
+      title: 'ID',
+      dataIndex: 'TimesheetID',
+      key: 'TimesheetID',
+      editable: false,
+    },
+    {
+      title: 'Staff',
+      dataIndex: 'StaffID',
+      key: 'StaffID',
+      editable: true,
+    },
+    {
+      title: 'Work Order',
+      dataIndex: 'WorkOrderID',
+      key: 'WorkOrderID',
+      editable: true,
+    },
+    {
       title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
+      dataIndex: 'Date',
+      key: 'Date',
       editable: true,
       render: (text) => moment(text).format('YYYY-MM-DD'),
     },
     {
       title: 'Hours',
-      dataIndex: 'hours',
-      key: 'hours',
-      editable: true,
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
+      dataIndex: 'Hours',
+      key: 'Hours',
       editable: true,
     },
     {
