@@ -87,6 +87,7 @@ const TimesheetTable = () => {
     workOrder: null,
     dateRange: null,
   });
+  const [sortedInfo, setSortedInfo] = useState({});
 
   useEffect(() => {
     fetchTimesheets();
@@ -243,13 +244,20 @@ const TimesheetTable = () => {
     );
   });
 
+  const handleChange = (pagination, filters, sorter) => {
+    console.log('Various parameters', pagination, filters, sorter);
+    setSortedInfo(sorter);
+  };
+
   const columns = [
     {
       title: 'ID',
       dataIndex: 'TimesheetID',
       key: 'TimesheetID',
       editable: false,
-      hidden: true
+      hidden: true,
+      sorter: (a, b) => a.TimesheetID - b.TimesheetID,
+      sortOrder: sortedInfo.columnKey === 'TimesheetID' && sortedInfo.order,
     },
     {
       title: 'Staff',
@@ -260,6 +268,12 @@ const TimesheetTable = () => {
         const staffMember = staff.find(s => s.StaffID === staffId);
         return staffMember ? staffMember.Name : 'Unknown';
       },
+      sorter: (a, b) => {
+        const staffA = staff.find(s => s.StaffID === a.StaffID);
+        const staffB = staff.find(s => s.StaffID === b.StaffID);
+        return staffA.Name.localeCompare(staffB.Name);
+      },
+      sortOrder: sortedInfo.columnKey === 'StaffID' && sortedInfo.order,
     },
     {
       title: 'Work Order',
@@ -270,6 +284,12 @@ const TimesheetTable = () => {
         const workOrder = workOrders.find(wo => wo.WorkOrderID === workOrderId);
         return workOrder ? `${workOrder.Task} - ${workOrder.Description}` : 'Unknown';
       },
+      sorter: (a, b) => {
+        const woA = workOrders.find(wo => wo.WorkOrderID === a.WorkOrderID);
+        const woB = workOrders.find(wo => wo.WorkOrderID === b.WorkOrderID);
+        return woA.Task.localeCompare(woB.Task);
+      },
+      sortOrder: sortedInfo.columnKey === 'WorkOrderID' && sortedInfo.order,
     },
     {
       title: 'Date',
@@ -277,12 +297,16 @@ const TimesheetTable = () => {
       key: 'Date',
       editable: true,
       render: (text) => text ? moment(text).format('YYYY-MM-DD') : '',
+      sorter: (a, b) => moment(a.Date).unix() - moment(b.Date).unix(),
+      sortOrder: sortedInfo.columnKey === 'Date' && sortedInfo.order,
     },
     {
       title: 'Hours',
       dataIndex: 'Hours',
       key: 'Hours',
       editable: true,
+      sorter: (a, b) => a.Hours - b.Hours,
+      sortOrder: sortedInfo.columnKey === 'Hours' && sortedInfo.order,
     },
     {
       title: 'Actions',
@@ -388,6 +412,7 @@ const TimesheetTable = () => {
           rowKey={(record) => record.TimesheetID}
           bordered
           style={{ background: 'white' }}
+          onChange={handleChange}
         />
       </Form>
     </div>
