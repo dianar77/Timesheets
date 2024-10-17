@@ -155,11 +155,14 @@ const TimesheetTable = () => {
     }
   };
 
-  const isEditing = (record) => record.id === editingKey;
+  const isEditing = (record) => record.TimesheetID === editingKey;
 
   const edit = (record) => {
-    form.setFieldsValue({ ...record, date: moment(record.date) });
-    setEditingKey(record.id);
+    form.setFieldsValue({ 
+      ...record, 
+      Date: moment(record.Date) // Ensure Date is a moment object
+    });
+    setEditingKey(record.TimesheetID);
   };
 
   const cancel = () => {
@@ -182,21 +185,24 @@ const TimesheetTable = () => {
         newData.splice(index, 1, updatedItem);
         setTimesheets(newData);
         setEditingKey('');
+      } else {
+        throw new Error('Timesheet not found');
       }
     } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
+      console.error('Validate Failed:', errInfo);
+      message.error('Failed to save: ' + errInfo.message);
     }
   };
 
   const handleDelete = async (key) => {
     try {
       await deleteTimesheet(key);
-      const newData = timesheets.filter((item) => item.id !== key);
+      const newData = timesheets.filter((item) => item.TimesheetID !== key);
       setTimesheets(newData);
       message.success('Timesheet deleted successfully');
     } catch (error) {
       console.error('Error deleting timesheet:', error);
-      message.error('Error deleting timesheet');
+      message.error('Error deleting timesheet: ' + error.message);
     }
   };
 
@@ -265,7 +271,7 @@ const TimesheetTable = () => {
         return editable ? (
           <span>
             <Button
-              onClick={() => save(record.id)}
+              onClick={() => save(record.TimesheetID)}
               style={{ marginRight: 8 }}
               icon={<SaveOutlined />}
             >
@@ -285,7 +291,7 @@ const TimesheetTable = () => {
             >
               Edit
             </Button>
-            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
+            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.TimesheetID)}>
               <Button icon={<DeleteOutlined />} type="danger">
                 Delete
               </Button>
@@ -316,6 +322,10 @@ const TimesheetTable = () => {
     };
   });
 
+  useEffect(() => {
+    console.log('Editing key changed:', editingKey);
+  }, [editingKey]);
+
   return (
     <div>
       <h2>Timesheet Table</h2>
@@ -332,7 +342,7 @@ const TimesheetTable = () => {
           loading={loading}
           columns={mergedColumns}
           dataSource={timesheets}
-          rowKey={(record) => record.id}
+          rowKey={(record) => record.TimesheetID} // Use TimesheetID as the key
           bordered
           style={{ background: 'white' }}
         />
