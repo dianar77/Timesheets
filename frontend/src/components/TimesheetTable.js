@@ -6,6 +6,7 @@ import moment from 'moment';
 import './TimesheetTable.css';
 
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 const EditableCell = ({
   editing,
@@ -81,6 +82,11 @@ const TimesheetTable = () => {
   const [editingKey, setEditingKey] = useState('');
   const [loading, setLoading] = useState(true);
   const [newTimesheet, setNewTimesheet] = useState(null);
+  const [filters, setFilters] = useState({
+    staff: null,
+    workOrder: null,
+    dateRange: null,
+  });
 
   useEffect(() => {
     fetchTimesheets();
@@ -126,19 +132,6 @@ const TimesheetTable = () => {
       setStaff(staffData);
     } catch (error) {
       console.error('Error fetching staff:', error);
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.error('Error response:', error.response.data);
-        console.error('Error status:', error.response.status);
-        console.error('Error headers:', error.response.headers);
-      } else if (error.request) {
-        // The request was made but no response was received
-        console.error('Error request:', error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.error('Error message:', error.message);
-      }
       message.error(`Error fetching staff data: ${error.message}`);
     }
   };
@@ -150,15 +143,6 @@ const TimesheetTable = () => {
       setWorkOrders(workOrderData);
     } catch (error) {
       console.error('Error fetching work orders:', error);
-      if (error.response) {
-        console.error('Error response:', error.response.data);
-        console.error('Error status:', error.response.status);
-        console.error('Error headers:', error.response.headers);
-      } else if (error.request) {
-        console.error('Error request:', error.request);
-      } else {
-        console.error('Error message:', error.message);
-      }
       message.error(`Error fetching work order data: ${error.message}`);
     }
   };
@@ -189,12 +173,10 @@ const TimesheetTable = () => {
       let updatedTimesheet;
       
       if (key === 'new') {
-        // Creating a new timesheet
         updatedTimesheet = await createTimesheet(row);
         setTimesheets(prev => [updatedTimesheet, ...prev]);
         setNewTimesheet(null);
       } else {
-        // Updating an existing timesheet
         const updatedItem = { 
           ...row, 
           TimesheetID: key,
@@ -212,7 +194,6 @@ const TimesheetTable = () => {
       setEditingKey('');
       message.success('Timesheet saved successfully');
       
-      // Force a re-render by updating a state
       setTimesheets(prev => [...prev]);
     } catch (errInfo) {
       console.error('Save failed:', errInfo);
@@ -234,7 +215,7 @@ const TimesheetTable = () => {
 
   const handleAdd = () => {
     const newTimesheetData = {
-      TimesheetID: 'new', // Temporary ID for the new row
+      TimesheetID: 'new',
       StaffID: null,
       WorkOrderID: null,
       Date: null,
@@ -244,6 +225,23 @@ const TimesheetTable = () => {
     setEditingKey('new');
     form.setFieldsValue(newTimesheetData);
   };
+
+  const handleFilterChange = (filterType, value) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [filterType]: value
+    }));
+  };
+
+  const filteredTimesheets = timesheets.filter(timesheet => {
+    return (
+      (!filters.staff || timesheet.StaffID === filters.staff) &&
+      (!filters.workOrder || timesheet.WorkOrderID === filters.workOrder) &&
+      (!filters.dateRange || 
+        (moment(timesheet.Date).isSameOrAfter(filters.dateRange[0], 'day') &&
+         moment(timesheet.Date).isSameOrBefore(filters.dateRange[1], 'day')))
+    );
+  });
 
   const columns = [
     {
@@ -278,20 +276,7 @@ const TimesheetTable = () => {
       dataIndex: 'Date',
       key: 'Date',
       editable: true,
-      render: (text, record) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <Form.Item
-            name="Date"
-            style={{ margin: 0 }}
-            rules={[{ required: true, message: 'Date is required' }]}
-          >
-            <DatePicker format="YYYY-MM-DD" />
-          </Form.Item>
-        ) : (
-          <span>{text ? moment(text).format('YYYY-MM-DD') : ''}</span>
-        );
-      },
+      render: (text) => text ? moment(text).format('YYYY-MM-DD') : '',
     },
     {
       title: 'Hours',
@@ -358,13 +343,35 @@ const TimesheetTable = () => {
     };
   }).filter(col => !col.hidden);
 
-  useEffect(() => {
-    console.log('Editing key changed:', editingKey);
-  }, [editingKey]);
-
   return (
     <div>
       <h2>Timesheet Table</h2>
+      <div style={{ marginBottom: 16 }}>
+        <Select
+          style={{ width: 200, marginRight: 8 }}
+          placeholder="Filter by Staff"
+          onChange={(value) => handleFilterChange('staff', value)}
+          allowClear
+        >
+          {staff.map(s => (
+            <Option key={s.StaffID} value={s.StaffID}>{s.Name}</Option>
+          ))}
+        </Select>
+        <Select
+          style={{ width: 200, marginRight: 8 }}
+          placeholder="Filter by Work Order"
+          onChange={(value) => handleFilterChange('workOrder', value)}
+          allowClear
+        >
+          {workOrders.map(wo => (
+            <Option key={wo.WorkOrderID} value={wo.WorkOrderID}>{`${wo.Task} - ${wo.Description}`}</Option>
+          ))}
+        </Select>
+        <RangePicker
+          style={{ marginRight: 8 }}
+          onChange={(dates) => handleFilterChange('dateRange', dates)}
+        />
+      </div>
       <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }} icon={<PlusOutlined />}>
         Add Timesheet
       </Button>
@@ -377,7 +384,7 @@ const TimesheetTable = () => {
           }}
           loading={loading}
           columns={mergedColumns}
-          dataSource={newTimesheet ? [newTimesheet, ...timesheets] : timesheets}
+          dataSource={newTimesheet ? [newTimesheet, ...filteredTimesheets] : filteredTimesheets}
           rowKey={(record) => record.TimesheetID}
           bordered
           style={{ background: 'white' }}
