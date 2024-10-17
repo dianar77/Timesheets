@@ -40,7 +40,7 @@ const EditableCell = ({
         inputNode = (
           <Select>
             {workOrders.map(wo => (
-              <Option key={wo.WorkOrderID} value={wo.WorkOrderID}>{`${wo.TaskNumber} - ${wo.Description}`}</Option>
+              <Option key={wo.WorkOrderID} value={wo.WorkOrderID}>{`${wo.Task} - ${wo.Description}`}</Option>
             ))}
           </Select>
         );
@@ -138,10 +138,20 @@ const TimesheetTable = () => {
   const fetchWorkOrders = async () => {
     try {
       const workOrderData = await getWorkOrders();
+      console.log('Work Order data received:', workOrderData);
       setWorkOrders(workOrderData);
     } catch (error) {
       console.error('Error fetching work orders:', error);
-      message.error('Error fetching work order data');
+      if (error.response) {
+        console.error('Error response:', error.response.data);
+        console.error('Error status:', error.response.status);
+        console.error('Error headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('Error request:', error.request);
+      } else {
+        console.error('Error message:', error.message);
+      }
+      message.error(`Error fetching work order data: ${error.message}`);
     }
   };
 
@@ -231,7 +241,7 @@ const TimesheetTable = () => {
       editable: true,
       render: (workOrderId) => {
         const workOrder = workOrders.find(wo => wo.WorkOrderID === workOrderId);
-        return workOrder ? `${workOrder.TaskNumber} - ${workOrder.Description}` : 'Unknown';
+        return workOrder ? `${workOrder.Task} - ${workOrder.Description}` : 'Unknown';
       },
     },
     {

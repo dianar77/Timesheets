@@ -2,11 +2,18 @@ const WorkOrder = require('../models/WorkOrder');
 
 exports.getAllWorkOrders = async (req, res) => {
   try {
+    console.log('Attempting to fetch all work orders');
     const workOrders = await WorkOrder.findAll();
+    console.log('Work orders fetched:', workOrders);
     res.json(workOrders);
   } catch (error) {
     console.error('Error fetching work orders:', error);
-    res.status(500).json({ message: 'Error fetching work orders', error: error.message });
+    console.error('Error stack:', error.stack);
+    res.status(500).json({ 
+      message: 'Error fetching work orders', 
+      error: error.message,
+      stack: error.stack
+    });
   }
 };
 

@@ -35,7 +35,8 @@ export const getStaffById = (id) => api.get(`/staff/${id}`);
 
 // Work Order endpoints
 export const getWorkOrders = async () => {
-  const response = await axios.get('/api/workorders');
+  console.log('Fetching work orders from:', `${API_URL}/workorders`);
+  const response = await axios.get(`${API_URL}/workorders`);
   return response.data;
 };
 

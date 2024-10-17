@@ -7,17 +7,18 @@ const WorkOrder = sequelize.define('WorkOrder', {
     primaryKey: true,
     autoIncrement: true
   },
-  TaskNumber: {
+  Task: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true,
+    field: 'Task#'  // This maps to the actual column name in the database
   },
   Description: {
-    type: DataTypes.STRING,
-    allowNull: false
+    type: DataTypes.STRING(2000),
+    allowNull: true
   },
   ProjectID: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true
   }
 }, {
   tableName: 'WorkOrders',
