@@ -15,7 +15,6 @@ const StaffTable = ({ disciplineId }) => {
   const fetchStaff = async () => {
     try {
       setLoading(true);
-      console.log("XXXdisciplineId", disciplineId);
       let staffData = undefined;
       if (disciplineId === undefined) {
         staffData = await getStaffs(disciplineId);

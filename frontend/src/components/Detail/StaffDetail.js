@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, message, Typography, Divider, Select } from 'antd';
+import { Form, Input, Button, message, Typography, Divider } from 'antd';
 import { getStaffById, createStaff, updateStaff, deleteStaff } from '../../services/Staffapi';
 import { getDisciplinesDropdownList } from '../../services/Disciplineapi';
+import { useParams, useNavigate } from 'react-router-dom';
 import TimesheetTable from '../List/TimesheetTable';
 
 const { Text } = Typography;
-const { Option } = Select;
 
-const StaffDetail = ({ staffId, onClose }) => {
+const StaffDetail = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -15,23 +17,22 @@ const StaffDetail = ({ staffId, onClose }) => {
   const [disciplines, setDisciplines] = useState([]);
 
   useEffect(() => {
-    fetchDisciplines();
-    if (staffId && staffId !== 'new') {
-      fetchStaffData(staffId);
-    } else if (staffId === 'new') {
+    fetchDisciplineData();
+    if (id && id !== 'new') {
+      fetchStaffData(id);
+    } else if (id === 'new') {
       setEditMode(true);
     }
-  }, [staffId]);
+  }, [id]);
 
   const fetchStaffData = async (id) => {
     try {
       setLoading(true);
       const data = await getStaffById(id);
-      setStaffData(data);
+      setStaffData(data.data);
       form.setFieldsValue({
         Name: data.Name,
-        PersonalID: data.PersonalID,
-        DisciplineID: data.DisciplineID
+        Rate: data.Rate
       });
     } catch (error) {
       console.error('Error fetching staff:', error);
@@ -41,13 +42,13 @@ const StaffDetail = ({ staffId, onClose }) => {
     }
   };
 
-  const fetchDisciplines = async () => {
+  const fetchDisciplineData = async () => {
     try {
-      const disciplinesData = await getDisciplinesDropdownList();
-      setDisciplines(disciplinesData.data);
+      const disciplineData = await getDisciplinesDropdownList();
+      setDisciplines(disciplineData.data);
     } catch (error) {
       console.error('Error fetching disciplines:', error);
-      message.error(`Error fetching disciplines: ${error.message}`);
+      message.error(`Error fetching discipline data: ${error.message}`);
     }
   };
 
@@ -55,11 +56,11 @@ const StaffDetail = ({ staffId, onClose }) => {
     try {
       setLoading(true);
       let savedStaff;
-      if (staffId === 'new') {
+      if (id === 'new') {
         savedStaff = await createStaff(values);
         message.success('Staff created successfully');
       } else {
-        savedStaff = await updateStaff(staffId, values);
+        savedStaff = await updateStaff(id, values);
         message.success('Staff updated successfully');
       }
       setEditMode(false);
@@ -75,15 +76,19 @@ const StaffDetail = ({ staffId, onClose }) => {
   const handleDelete = async () => {
     try {
       setLoading(true);
-      await deleteStaff(staffId);
+      await deleteStaff(id);
       message.success('Staff deleted successfully');
-      onClose();
+      navigate('/staffs');
     } catch (error) {
       console.error('Error deleting staff:', error);
       message.error(`Error deleting staff: ${error.message}`);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleBack = () => {
+    navigate('/staffs');
   };
 
   const toggleEditMode = () => {
@@ -100,16 +105,17 @@ const StaffDetail = ({ staffId, onClose }) => {
         <div>
           <p><Text strong>Name:</Text> {staffData.Name}</p>
           <p><Text strong>Personal ID:</Text> {staffData.PersonalID}</p>
-          <p><Text strong>Discipline:</Text> {disciplines.find(d => d.DisciplineID === staffData.DisciplineID)?.Name}</p>
+          <p><Text strong>Discipline:</Text> {disciplines.find(d => d.id === staffData.DisciplineID)?.Name}</p>
           <Button onClick={toggleEditMode} type="primary" style={{ marginRight: 8 }}>
             Edit
           </Button>
           <Button onClick={handleDelete} danger style={{ marginRight: 8 }}>
             Delete
           </Button>
-          <Button onClick={onClose}>Close</Button>
+          <Button onClick={handleBack}>Back to List</Button>
         </div>
       ) : (
+        
         <Form form={form} onFinish={onFinish} layout="vertical">
           <Form.Item
             name="Name"
@@ -132,8 +138,8 @@ const StaffDetail = ({ staffId, onClose }) => {
           >
             <Select>
               {disciplines.map(discipline => (
-                <Option key={discipline.DisciplineID} value={discipline.DisciplineID}>
-                  {discipline.Name}
+                <Option key={discipline.id} value={discipline.id}>
+                  {discipline.name}
                 </Option>
               ))}
             </Select>
@@ -152,10 +158,10 @@ const StaffDetail = ({ staffId, onClose }) => {
         </Form>
       )}
       
-      {staffId && staffId !== 'new' && (
+      {id && id !== 'new' && (
         <>
           <Divider />
-          <TimesheetTable staffId={staffId} />
+          <TimesheetTable staffId={id} />
         </>
       )}
     </div>

@@ -26,7 +26,7 @@ const DisciplineDetail = () => {
     try {
       setLoading(true);
       const data = await getDisciplineById(id);
-      setDisciplineData(data);
+      setDisciplineData(data.data);
       form.setFieldsValue({
         Name: data.Name,
         Rate: data.Rate
