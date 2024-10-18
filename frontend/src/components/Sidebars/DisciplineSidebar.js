@@ -6,7 +6,7 @@ import { ToolOutlined } from '@ant-design/icons';
 
 const { SubMenu } = Menu;
 
-function DisciplineSidebar({ onDisciplineSelect }) {
+function DisciplineSidebar({ onDisciplineSelect , isExpanded, onExpand }) {
   const [disciplines, setDisciplines] = useState([]);
   const navigate = useNavigate();
 
@@ -29,7 +29,8 @@ function DisciplineSidebar({ onDisciplineSelect }) {
   };
 
   return (
-    <SubMenu key="disciplines" icon={<ToolOutlined />} title={<Link to="/disciplines">Disciplines</Link>}>
+    <SubMenu key="disciplines" icon={<ToolOutlined />} title={<Link to="/disciplines">Disciplines</Link>} onTitleClick={onExpand}
+    open={isExpanded}>
       {disciplines.map(discipline => (
         <Menu.Item key={`discipline-${discipline.id}`} onClick={() => handleDisciplineClick(discipline.id)}>
           {discipline.name}

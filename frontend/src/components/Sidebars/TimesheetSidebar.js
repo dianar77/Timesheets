@@ -6,7 +6,7 @@ import { ClockCircleOutlined } from '@ant-design/icons';
 
 const { SubMenu } = Menu;
 
-function TimesheetSidebar({ onTimesheetSelect }) {
+function TimesheetSidebar({ onTimesheetSelect, isExpanded, onExpand  }) {
   const [timesheets, setTimesheets] = useState([]);
   const navigate = useNavigate();
 
@@ -31,7 +31,8 @@ function TimesheetSidebar({ onTimesheetSelect }) {
   };
 
   return (
-    <SubMenu key="timesheets" icon={<ClockCircleOutlined />} title={<Link to="/timesheets">Timesheets</Link>}>
+    <SubMenu key="timesheets" icon={<ClockCircleOutlined />} title={<Link to="/timesheets">Timesheets</Link>} onTitleClick={onExpand}
+    open={isExpanded}>
       {timesheets.map(timesheet => (
         <Menu.Item key={`timesheet-${timesheet.id}`} onClick={() => handleTimesheetClick(timesheet.id)}>
           {`${timesheet.name}`}

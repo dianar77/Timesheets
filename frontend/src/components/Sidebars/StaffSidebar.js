@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Menu } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ToolOutlined } from '@ant-design/icons';
+import { TeamOutlined } from '@ant-design/icons';
 
 const { SubMenu } = Menu;
 
-function StaffSidebar({ onStaffSelect }) {
+function StaffSidebar({ onStaffSelect, isExpanded, onExpand  }) {
   const [staffs, setStaffs] = useState([]);
   const navigate = useNavigate();
 
@@ -29,7 +29,8 @@ function StaffSidebar({ onStaffSelect }) {
   };
 
   return (
-    <SubMenu key="staffs" icon={<ToolOutlined />} title={<Link to="/staffs">Staffs</Link>}>
+    <SubMenu key="staffs" icon={<TeamOutlined />} title={<Link to="/staffs">Staffs</Link>} onTitleClick={onExpand}
+    open={isExpanded}>
       {staffs.map(staff => (
         <Menu.Item key={`staff-${staff.id}`} onClick={() => handleStaffClick(staff.id)}>
           {staff.name}

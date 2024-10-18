@@ -6,7 +6,7 @@ import { TeamOutlined } from '@ant-design/icons';
 
 const { SubMenu } = Menu;
 
-function ClientSidebar({ onClientSelect }) {
+function ClientSidebar({ onClientSelect , isExpanded, onExpand }) {
   const [clients, setClients] = useState([]);
   const navigate = useNavigate();
 
@@ -29,7 +29,8 @@ function ClientSidebar({ onClientSelect }) {
   };
 
   return (
-    <SubMenu key="clients" icon={<TeamOutlined />} title={<Link to="/clients">Clients</Link>}>
+    <SubMenu key="clients" icon={<TeamOutlined />} title={<Link to="/clients">Clients</Link>} onTitleClick={onExpand}
+    open={isExpanded}>
       {clients.map(client => (
         <Menu.Item key={`client-${client.id}`} onClick={() => handleClientClick(client.id)}>
           {client.name}

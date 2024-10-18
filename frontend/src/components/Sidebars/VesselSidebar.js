@@ -6,7 +6,7 @@ import { ToolOutlined } from '@ant-design/icons';
 
 const { SubMenu } = Menu;
 
-function VesselSidebar({ onVesselSelect }) {
+function VesselSidebar({ onVesselSelect, isExpanded, onExpand }) {
   const [vessels, setVessels] = useState([]);
   const navigate = useNavigate();
 
@@ -29,7 +29,8 @@ function VesselSidebar({ onVesselSelect }) {
   };
 
   return (
-    <SubMenu key="vessels" icon={<ToolOutlined />} title={<Link to="/vessels">Vessels</Link>}>
+    <SubMenu key="vessels" icon={<ToolOutlined />} title={<Link to="/vessels">Vessels</Link>} onTitleClick={onExpand}
+    open={isExpanded}>
       {vessels.map(vessel => (
         <Menu.Item key={`vessel-${vessel.id}`} onClick={() => handleVesselClick(vessel.id)}>
           {vessel.name}
@@ -40,3 +41,5 @@ function VesselSidebar({ onVesselSelect }) {
 }
 
 export default VesselSidebar;
+
+
