@@ -108,12 +108,11 @@ const TimesheetTable = ( staffId = null, workOrderId = null) => {
       setLoading(true);
 
       let data;
-      console.log('xxxts', staffId);
-      console.log('xxxtw', workOrderId);
-      if (staffId) {
+
+      if (staffId && staffId.staffId) {
         data = await getTimesheetByStaff(staffId.staffId);
-      } else if (workOrderId) {
-        data = await getTimesheetByWorkOrder(workOrderId.workOrderId);
+      } else if (staffId && staffId.workOrderId) {
+        data = await getTimesheetByWorkOrder(staffId.workOrderId);
       } else {
         data = await getTimesheets();
       }
@@ -418,8 +417,8 @@ const TimesheetTable = ( staffId = null, workOrderId = null) => {
 
   return (
     <div>
-      <h2>{staffId ? 'Timesheet for this Staff' : (workOrderId ? 'Timesheet for this Work Order' : 'Timesheet Table')}</h2>
-      {!staffId && !workOrderId && (
+      <h2>{staffId.staffId ? 'Timesheet for this Staff' : (staffId.workOrderId ? 'Timesheet for this Work Order' : 'Timesheet Table')}</h2>
+      {!staffId.staffId && !staffId.workOrderId && (
       <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }} icon={<PlusOutlined />}>
         Add Timesheet
       </Button>

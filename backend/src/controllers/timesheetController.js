@@ -135,14 +135,15 @@ exports.getTimesheetByStaff = async (req, res) => {
 
 exports.getTimesheetByWorkOrder = async (req, res) => {
   try {
-    const workOrderId = req.params.workOrderId;
+    const workorderId = req.params.workorderId;
 
     const timesheets = await Timesheet.findAll({
-      where: { WorkOrderID: workOrderId },
+      where: { WorkOrderID: workorderId },
       attributes: ['TimesheetID', 'StaffID', 'WorkOrderID', 'Date', 'Hours'] // Add or remove attributes as needed
     });
     res.json(timesheets);
   } catch (error) {
+    console.log('xxxtw', req.params);
     console.error('Error fetching timesheet by workOrder:', error);
     res.status(500).json({ message: 'Error fetching timesheet by workOrder', error: error.message });
   }
