@@ -35,7 +35,7 @@ const EditableCell = ({
         inputNode = (
           <Select>
             {staff.map(s => (
-              <Option key={s.StaffID} value={s.StaffID}>{s.Name}</Option>
+              <Option key={s.id} value={s.id}>{s.name}</Option>
             ))}
           </Select>
         );
@@ -43,7 +43,7 @@ const EditableCell = ({
         inputNode = (
           <Select>
             {workOrders.map(wo => (
-              <Option key={wo.WorkOrderID} value={wo.WorkOrderID}>{`${wo.Task} - ${wo.Description}`}</Option>
+              <Option key={wo.id} value={wo.id}>{`${wo.name}`}</Option>
             ))}
           </Select>
         );

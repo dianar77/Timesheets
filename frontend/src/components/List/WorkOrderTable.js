@@ -27,7 +27,7 @@ const EditableCell = ({
       inputNode = (
         <Select>
           {projects.map(p => (
-            <Option key={p.ProjectID} value={p.ProjectID}>{p.Name}</Option>
+            <Option key={p.id} value={p.id}>{p.name}</Option>
           ))}
         </Select>
       );

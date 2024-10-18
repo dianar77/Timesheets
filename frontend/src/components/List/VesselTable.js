@@ -26,7 +26,6 @@ const EditableCell = ({
     case 'select':
       inputNode = (
         <Select>
-          {console.log("XXXclients", clients)}
           {clients.map(client => (
             <Option key={client.id} value={client.id}>{client.name}</Option>
           ))}
