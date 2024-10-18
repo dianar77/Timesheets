@@ -8,7 +8,7 @@ import ProjectTable from './components/List/ProjectTable';
 import DisciplineTable from './components/List/DisciplineTable';
 import DisciplineDetail from './components/Detail/DisciplineDetail';
 import StaffTable from './components/List/StaffTable';
-import Sidebar from './components/List/Sidebar';
+import Sidebar from './components/Sidebar';
 import './App.css';
 
 function DisciplineRoute() {

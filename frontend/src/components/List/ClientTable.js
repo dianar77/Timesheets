@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar from './List/Sidebar';
-import { getClients } from '../services/api';
+import Sidebar from '../Sidebar';
+import { getClients } from '../../services/api';
 import './ClientTable.css';
 
 const ClientTable = () => {
