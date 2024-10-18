@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { 
   OrderedListOutlined, 
   ClockCircleOutlined, 
@@ -12,7 +13,30 @@ import {
 } from '@ant-design/icons';
 import './Sidebar.css';
 
-function Sidebar() {
+const { SubMenu } = Menu;
+
+function Sidebar({ onDisciplineSelect }) {
+  const [disciplines, setDisciplines] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchDisciplines();
+  }, []);
+
+  const fetchDisciplines = async () => {
+    try {
+      const response = await axios.get('/api/disciplines/dropdown/list');
+      setDisciplines(response.data);
+    } catch (error) {
+      console.error('Error fetching disciplines:', error);
+    }
+  };
+
+  const handleDisciplineClick = (disciplineId) => {
+    onDisciplineSelect(disciplineId);
+    navigate(`/disciplines/${disciplineId}`);
+  };
+
   return (
     <div className="sidebar">
       <div className="sidebar-header">
@@ -34,9 +58,13 @@ function Sidebar() {
         <Menu.Item key="projects" icon={<ProjectOutlined />}>
           <Link to="/projects">Projects</Link>
         </Menu.Item>
-        <Menu.Item key="disciplines" icon={<ToolOutlined />}>
-          <Link to="/disciplines">Disciplines</Link>
-        </Menu.Item>
+        <SubMenu key="disciplines" icon={<ToolOutlined />} title={<Link to="/disciplines">Disciplines</Link>}>
+          {disciplines.map(discipline => (
+            <Menu.Item key={`discipline-${discipline.id}`} onClick={() => handleDisciplineClick(discipline.id)}>
+              {discipline.name}
+            </Menu.Item>
+          ))}
+        </SubMenu>
         <Menu.Item key="staff" icon={<UserOutlined />}>
           <Link to="/staff">Staff</Link>
         </Menu.Item>

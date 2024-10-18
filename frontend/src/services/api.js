@@ -167,6 +167,16 @@ export const deleteDiscipline = async (id) => {
   return response.data;
 };
 
+export const getDiscipline = async (id) => {
+  try {
+    const response = await axios.get(`/api/disciplines/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching discipline:', error);
+    throw error;
+  }
+};
+
 // Add these functions to the existing api.js file
 
 export const getStaff = async () => {
