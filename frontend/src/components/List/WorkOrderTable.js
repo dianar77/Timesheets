@@ -77,7 +77,6 @@ const WorkOrderTable = ({ projectId }) => {
       let data;
       if (projectId) {
         // If projectId is provided, fetch work orders for that project
-        console.log('xxxpp', projectId);
         data = await getWorkOrderByProject(projectId);
       } else {
         // Otherwise, fetch all work orders

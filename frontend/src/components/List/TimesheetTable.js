@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, DatePicker, InputNumber, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getTimesheets, updateTimesheet, deleteTimesheet, createTimesheet, getTimesheetByStaff } from '../../services/Timesheetapi';
+import { getTimesheets, updateTimesheet, deleteTimesheet, createTimesheet, getTimesheetByStaff, getTimesheetByWorkOrder } from '../../services/Timesheetapi';
 import { getWorkOrderDropdownList } from '../../services/WorkOrderapi';
 import { getStaffsDropdownList } from '../../services/Staffapi';
 import moment from 'moment';
@@ -76,7 +76,7 @@ const EditableCell = ({
   );
 };
 
-const TimesheetTable = ( staffId = null) => {
+const TimesheetTable = ( staffId = null, workOrderId = null) => {
   const [form] = Form.useForm();
   const [timesheets, setTimesheets] = useState([]);
   const [staff, setStaff] = useState([]);
@@ -95,7 +95,7 @@ const TimesheetTable = ( staffId = null) => {
     fetchTimesheets();
     fetchStaff();
     fetchWorkOrders();
-  }, [staffId]);
+  }, [staffId, workOrderId]);
 
   useEffect(() => {
     if (editingKey === '') {
@@ -109,8 +109,11 @@ const TimesheetTable = ( staffId = null) => {
 
       let data;
       console.log('xxxts', staffId);
+      console.log('xxxtw', workOrderId);
       if (staffId) {
         data = await getTimesheetByStaff(staffId.staffId);
+      } else if (workOrderId) {
+        data = await getTimesheetByWorkOrder(workOrderId.workOrderId);
       } else {
         data = await getTimesheets();
       }
@@ -415,8 +418,8 @@ const TimesheetTable = ( staffId = null) => {
 
   return (
     <div>
-      <h2>{staffId ? 'Timesheet for this Staff' : 'Timesheet Table'}</h2>
-      {!staffId && (
+      <h2>{staffId ? 'Timesheet for this Staff' : (workOrderId ? 'Timesheet for this Work Order' : 'Timesheet Table')}</h2>
+      {!staffId && !workOrderId && (
       <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }} icon={<PlusOutlined />}>
         Add Timesheet
       </Button>

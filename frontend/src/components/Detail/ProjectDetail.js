@@ -30,7 +30,6 @@ const ProjectDetail = () => {
     try {
       setLoading(true);
       const data = await getProjectById(id);
-      console.log('xxxppp', data);
       setProjectData(data.data);
       form.setFieldsValue({
         Name: data.Name,

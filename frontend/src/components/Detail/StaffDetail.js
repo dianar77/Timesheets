@@ -162,7 +162,7 @@ const StaffDetail = () => {
       {id && id !== 'new' && (
         <>
           <Divider />
-          <TimesheetTable staffId={id} />
+          <TimesheetTable staffId={id} workOrderId={undefined} />
         </>
       )}
     </div>
