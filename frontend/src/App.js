@@ -4,6 +4,7 @@ import { Layout } from 'antd';
 import ClientTable from './components/List/ClientTable';
 import ClientDetail from './components/Detail/ClientDetail';
 import TimesheetTable from './components/List/TimesheetTable';
+import TimesheetDetail from './components/Detail/TimesheetDetail';
 import VesselTable from './components/List/VesselTable';
 import VesselDetail from './components/Detail/VesselDetail';
 import WorkOrderTable from './components/List/WorkOrderTable';
@@ -74,6 +75,15 @@ function WorkOrderRoute() {
   );
 }
 
+function TimesheetRoute() {
+  const { id } = useParams();
+  return id ? (
+    <TimesheetDetail />
+  ) : (
+    <TimesheetTable />
+  );
+}
+
 function App() {
   const [selectedDisciplineId, setSelectedDisciplineId] = useState(null);
   const [selectedStaffId, setSelectedStaffId] = useState(null);
@@ -81,6 +91,7 @@ function App() {
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [selectedVesselId, setSelectedVesselId] = useState(null);
   const [selectedWorkOrderId, setSelectedWorkOrderId] = useState(null);
+  const [selectedTimesheetId, setSelectedTimesheetId] = useState(null);
 
   const handleDisciplineSelect = (disciplineId) => {
     setSelectedDisciplineId(disciplineId);
@@ -106,6 +117,10 @@ function App() {
     setSelectedWorkOrderId(workOrderId);
   };
 
+  const handleTimesheetSelect = (timesheetId) => {
+    setSelectedTimesheetId(timesheetId);
+  };
+
   return (
     <Router>
       <div className="app" style={{ display: 'flex' }}>
@@ -116,13 +131,15 @@ function App() {
           onProjectSelect={handleProjectSelect}
           onVesselSelect={handleVesselSelect}
           onWorkOrderSelect={handleWorkOrderSelect}        
+          onTimesheetSelect={handleTimesheetSelect}
         />
         <div className="content" style={{ flex: 1, padding: '20px' }}>
           <Content>
             <Routes>
               <Route path="/clients" element={<ClientRoute />} />
               <Route path="/clients/:id" element={<ClientRoute />} />
-              <Route path="/timesheets" element={<TimesheetTable />} />
+              <Route path="/timesheets" element={<TimesheetRoute />} />
+              <Route path="/timesheets/:id" element={<TimesheetRoute />} />
               <Route path="/vessels" element={<VesselRoute />} />
               <Route path="/vessels/:id" element={<VesselRoute />} />
               <Route path="/workorders" element={<WorkOrderRoute />} />

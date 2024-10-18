@@ -15,8 +15,9 @@ import ClientSidebar from './ClientSidebar';
 import ProjectSidebar from './ProjectSidebar';
 import VesselSidebar from './VesselSidebar';
 import WorkOrderSidebar from './WorkOrderSidebar';
+import TimesheetSidebar from './TimesheetSidebar';
 
-function Sidebar({ onDisciplineSelect, onStaffSelect, onClientSelect, onProjectSelect,onVesselSelect,onWorkOrderSelect }) {
+function Sidebar({ onDisciplineSelect, onStaffSelect, onClientSelect, onProjectSelect,onVesselSelect,onWorkOrderSelect, onTimesheetSelect }) {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
@@ -24,15 +25,12 @@ function Sidebar({ onDisciplineSelect, onStaffSelect, onClientSelect, onProjectS
       </div>
       <Menu mode="inline" theme="dark">
         <VesselSidebar onVesselSelect={onVesselSelect} />
-        <Menu.Item key="timesheets" icon={<ClockCircleOutlined />}>
-          <Link to="/timesheets">Timesheets</Link>
-        </Menu.Item>
         <WorkOrderSidebar onWorkOrderSelect={onWorkOrderSelect} />
+        <TimesheetSidebar onTimesheetSelect={onTimesheetSelect} />
         <ProjectSidebar onProjectSelect={onProjectSelect} />
         <ClientSidebar onClientSelect={onClientSelect} />
         <DisciplineSidebar onDisciplineSelect={onDisciplineSelect} />
         <StaffSidebar onStaffSelect={onStaffSelect} />
-        
       </Menu>
     </div>
   );
