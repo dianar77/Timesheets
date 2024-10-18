@@ -51,7 +51,7 @@ const TimesheetDetail = () => {
   const fetchStaffData = async () => {
     try {
       const staffData = await getStaffsDropdownList();
-      setStaffs(staffData);
+      setStaffs(staffData.data);
     } catch (error) {
       console.error('Error fetching staffs:', error);
       message.error(`Error fetching staff data: ${error.message}`);
@@ -61,7 +61,7 @@ const TimesheetDetail = () => {
   const fetchWorkOrderData = async () => {
     try {
       const workOrderData = await getWorkOrderDropdownList();
-      setWorkOrders(workOrderData);
+      setWorkOrders(workOrderData.data);
     } catch (error) {
       console.error('Error fetching work orders:', error);
       message.error(`Error fetching work order data: ${error.message}`);

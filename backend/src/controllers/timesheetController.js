@@ -102,13 +102,13 @@ exports.deleteTimesheet = async (req, res) => {
 exports.getTimesheetForDropdown = async (req, res) => {
   try {
     const timesheets = await Timesheet.findAll({
-      attributes: ['TimesheetID', 'Name'],
-      order: [['Name', 'ASC']]
+      attributes: ['TimesheetID', 'StaffID', 'WorkOrderID', 'Date', 'Hours'],
+      order: [['StaffID', 'ASC']]
     });
     
     const formattedtimesheets = timesheets.map(d => ({
       id: d.TimesheetID,
-      name: d.Name
+      name: d.StaffID + ' - ' + d.Date
     }));
     
     res.json(formattedtimesheets);
