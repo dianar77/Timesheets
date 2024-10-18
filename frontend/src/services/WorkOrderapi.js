@@ -23,12 +23,12 @@ export const getWorkOrders = async () => {
   };
 
 
-  export const getWorkOrderByVessel = async (vesselId) => {
+  export const getWorkOrderByProject = async (projectId) => {
     try {
-      const response = await api.get(`/workorders/vessel/${vesselId}`);
+      const response = await api.get(`/workorders/project/${projectId}`);
       return response.data;
     } catch (error) {
-      console.error(`Error fetching work order by vessel:`, error);
+      console.error(`Error fetching work order by project:`, error);
       throw error;
     }
   };

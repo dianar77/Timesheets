@@ -12,7 +12,7 @@ exports.getAllWorkOrders = async (req, res) => {
 
 exports.getWorkOrderById = async (req, res) => {
   try {
-    const workOrder = await WorkOrder.getById(req.params.id);
+    const workOrder = await WorkOrder.findByPk(req.params.id);
     if (workOrder) {
       res.json(workOrder);
     } else {

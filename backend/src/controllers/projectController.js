@@ -12,7 +12,7 @@ exports.getAllProjects = async (req, res) => {
 
 exports.getProjectById = async (req, res) => {
   try {
-    const project = await Project.getById(req.params.id);
+    const project = await Project.findByPk(req.params.id);
     if (project) {
       res.json(project);
     } else {

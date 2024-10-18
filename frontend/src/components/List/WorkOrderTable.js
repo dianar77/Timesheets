@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, InputNumber, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getWorkOrders, updateWorkOrder, deleteWorkOrder, createWorkOrder } from '../../services/WorkOrderapi';
+import { getWorkOrders, updateWorkOrder, deleteWorkOrder, createWorkOrder, getWorkOrderByProject } from '../../services/WorkOrderapi';
 import { getProjectDropdownList } from '../../services/Projectapi';
 import './WorkOrderTable.css';
 
@@ -58,7 +58,7 @@ const EditableCell = ({
   );
 };
 
-const WorkOrderTable = () => {
+const WorkOrderTable = ({ projectId }) => {
   const [form] = Form.useForm();
   const [workOrders, setWorkOrders] = useState([]);
   const [projects, setProjects] = useState([]);
@@ -69,12 +69,20 @@ const WorkOrderTable = () => {
   useEffect(() => {
     fetchWorkOrders();
     fetchProjects();
-  }, []);
+  }, [projectId]);
 
   const fetchWorkOrders = async () => {
     try {
       setLoading(true);
-      const data = await getWorkOrders();
+      let data;
+      if (projectId) {
+        // If projectId is provided, fetch work orders for that project
+        console.log('xxxpp', projectId);
+        data = await getWorkOrderByProject(projectId);
+      } else {
+        // Otherwise, fetch all work orders
+        data = await getWorkOrders();
+      }
       setWorkOrders(data);
     } catch (error) {
       console.error('Error fetching work orders:', error);
@@ -114,6 +122,9 @@ const WorkOrderTable = () => {
       let updatedWorkOrder;
       
       if (key === 'new') {
+        if (projectId) {
+          row.ProjectID = projectId;
+        }
         updatedWorkOrder = await createWorkOrder(row);
         setWorkOrders(prev => [updatedWorkOrder, ...prev]);
         setNewWorkOrder(null);
@@ -151,7 +162,7 @@ const WorkOrderTable = () => {
       WorkOrderID: 'new',
       Task: null,
       Description: '',
-      ProjectID: null,
+      ProjectID: projectId || null,
     };
     setNewWorkOrder(newWorkOrderData);
     setEditingKey('new');
@@ -243,6 +254,7 @@ const WorkOrderTable = () => {
       }),
     };
   }).filter(col => !col.hidden);
+
 
   return (
     <div className="work-order-table">

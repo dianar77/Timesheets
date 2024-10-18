@@ -12,8 +12,9 @@ import './Sidebar.css';
 import DisciplineSidebar from './DisciplineSidebar';
 import StaffSidebar from './StaffSidebar';
 import ClientSidebar from './ClientSidebar';
+import ProjectSidebar from './ProjectSidebar';
 
-function Sidebar({ onDisciplineSelect, onStaffSelect, onClientSelect }) {
+function Sidebar({ onDisciplineSelect, onStaffSelect, onClientSelect, onProjectSelect }) {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
@@ -29,9 +30,7 @@ function Sidebar({ onDisciplineSelect, onStaffSelect, onClientSelect }) {
         <Menu.Item key="workorders" icon={<FileOutlined />}>
           <Link to="/workorders">Work Orders</Link>
         </Menu.Item>
-        <Menu.Item key="projects" icon={<ProjectOutlined />}>
-          <Link to="/projects">Projects</Link>
-        </Menu.Item>
+        <ProjectSidebar onProjectSelect={onProjectSelect} />
         <ClientSidebar onClientSelect={onClientSelect} />
         <DisciplineSidebar onDisciplineSelect={onDisciplineSelect} />
         <StaffSidebar onStaffSelect={onStaffSelect} />

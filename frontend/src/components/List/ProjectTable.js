@@ -173,7 +173,7 @@ const ProjectTable = () => {
       editable: true,
     },
     {
-      title: 'Number',
+      title: 'Num',
       dataIndex: 'Num',
       key: 'Num',
       editable: true,

@@ -11,6 +11,7 @@ import DisciplineDetail from './components/Detail/DisciplineDetail';
 import StaffTable from './components/List/StaffTable';
 import StaffDetail from './components/Detail/StaffDetail';
 import Sidebar from './components/Sidebars/Sidebar';
+import ProjectDetail from './components/Detail/ProjectDetail';
 
 import './App.css';
 
@@ -43,10 +44,20 @@ function ClientRoute() {
   );
 }
 
+function ProjectRoute() {
+  const { id } = useParams();
+  return id ? (
+    <ProjectDetail />
+  ) : (
+    <ProjectTable />
+  );
+}
+
 function App() {
   const [selectedDisciplineId, setSelectedDisciplineId] = useState(null);
   const [selectedStaffId, setSelectedStaffId] = useState(null);
   const [selectedClientId, setSelectedClientId] = useState(null);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
 
   const handleDisciplineSelect = (disciplineId) => {
     setSelectedDisciplineId(disciplineId);
@@ -60,6 +71,10 @@ function App() {
     setSelectedClientId(clientId);
   };
 
+  const handleProjectSelect = (projectId) => {
+    setSelectedProjectId(projectId);
+  };
+
   return (
     <Router>
       <div className="app" style={{ display: 'flex' }}>
@@ -67,6 +82,7 @@ function App() {
           onDisciplineSelect={handleDisciplineSelect} 
           onStaffSelect={handleStaffSelect}
           onClientSelect={handleClientSelect}
+          onProjectSelect={handleProjectSelect}
         />
         <div className="content" style={{ flex: 1, padding: '20px' }}>
           <Routes>
@@ -75,7 +91,8 @@ function App() {
             <Route path="/timesheets" element={<TimesheetTable />} />
             <Route path="/vessels" element={<VesselTable />} />
             <Route path="/workorders" element={<WorkOrderTable />} />
-            <Route path="/projects" element={<ProjectTable />} />
+            <Route path="/projects" element={<ProjectRoute />} />
+            <Route path="/projects/:id" element={<ProjectRoute />} />
             <Route path="/disciplines" element={<DisciplineRoute />} />
             <Route path="/disciplines/:id" element={<DisciplineRoute />} />
             <Route path="/staffs" element={<StaffRoute />} />
