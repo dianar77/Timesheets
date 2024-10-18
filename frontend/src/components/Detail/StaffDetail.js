@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, message, Typography, Divider } from 'antd';
+import { Form, Input, Button, message, Typography, Divider, Select } from 'antd';
 import { getStaffById, createStaff, updateStaff, deleteStaff } from '../../services/Staffapi';
 import { getDisciplinesDropdownList } from '../../services/Disciplineapi';
 import { useParams, useNavigate } from 'react-router-dom';
 import TimesheetTable from '../List/TimesheetTable';
 
 const { Text } = Typography;
+const { Option } = Select;
 
 const StaffDetail = () => {
   const { id } = useParams();
@@ -148,12 +149,12 @@ const StaffDetail = () => {
             <Button type="primary" htmlType="submit" loading={loading} style={{ marginRight: 8 }}>
               Save
             </Button>
-            {staffId !== 'new' && (
+            {id !== 'new' && (
               <Button onClick={toggleEditMode} style={{ marginRight: 8 }}>
                 Cancel
               </Button>
             )}
-            <Button onClick={onClose}>Close</Button>
+           <Button onClick={handleBack}>Back to List</Button>
           </Form.Item>
         </Form>
       )}
