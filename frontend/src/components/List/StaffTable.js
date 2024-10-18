@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getStaff, updateStaff, deleteStaff, createStaff } from '../../services/api';
+import { getStaff, updateStaff, deleteStaff, createStaff, getStaffByDiscipline } from '../../services/api';
 import axios from 'axios';
 import './StaffTable.css';
 
@@ -48,24 +48,28 @@ const EditableCell = ({
   );
 };
 
-const StaffTable = () => {
+const StaffTable = ({ disciplineId = null }) => {
   const [form] = Form.useForm();
   const [staff, setStaff] = useState([]);
   const [disciplines, setDisciplines] = useState([]);
   const [editingKey, setEditingKey] = useState('');
   const [loading, setLoading] = useState(true);
   const [newStaff, setNewStaff] = useState(null);
-  const [selectedDiscipline, setSelectedDiscipline] = useState('');
 
   useEffect(() => {
     fetchStaff();
     fetchDisciplines();
-  }, []);
+  }, [disciplineId]);
 
   const fetchStaff = async () => {
     try {
       setLoading(true);
-      const response = await getStaff();
+      let response;
+      if (disciplineId) {
+        response = await getStaffByDiscipline(disciplineId);
+      } else {
+        response = await getStaff();
+      }
       setStaff(response);
     } catch (error) {
       console.error('Error fetching staff:', error);
@@ -145,14 +149,6 @@ const StaffTable = () => {
     setEditingKey('new');
     form.setFieldsValue(newStaffData);
   };
-
-  const handleDisciplineFilter = (event) => {
-    setSelectedDiscipline(event.target.value);
-  };
-
-  const filteredStaff = selectedDiscipline
-    ? staff.filter(employee => employee.DisciplineID === selectedDiscipline)
-    : staff;
 
   const columns = [
     {
@@ -235,20 +231,12 @@ const StaffTable = () => {
 
   return (
     <div className="staff-table">
-      <h2>Staff Table</h2>
-      <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }} icon={<PlusOutlined />}>
-        Add Staff
-      </Button>
-      <Select 
-        style={{ width: 200, marginBottom: 16, marginLeft: 16 }}
-        placeholder="Filter by Discipline"
-        onChange={(value) => setSelectedDiscipline(value)}
-        allowClear
-      >
-        {disciplines.map(d => (
-          <Option key={d.id} value={d.id}>{d.name}</Option>
-        ))}
-      </Select>
+      <h2>{disciplineId ? 'Staff in this Discipline' : 'Staff Table'}</h2>
+      {!disciplineId && (
+        <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }} icon={<PlusOutlined />}>
+          Add Staff
+        </Button>
+      )}
       <Form form={form} component={false}>
         <Table
           components={{
@@ -258,7 +246,7 @@ const StaffTable = () => {
           }}
           loading={loading}
           columns={mergedColumns}
-          dataSource={newStaff ? [newStaff, ...filteredStaff] : filteredStaff}
+          dataSource={newStaff ? [newStaff, ...staff] : staff}
           rowKey={(record) => record.StaffID}
           bordered
         />

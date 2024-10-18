@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, InputNumber, Button, message, Typography, Divider } from 'antd';
 import { getDiscipline, createDiscipline, updateDiscipline, deleteDiscipline } from '../../services/api';
 import { useParams, useNavigate } from 'react-router-dom';
-import FilteredStaffTable from '../List/FilteredStaffTable';
+import StaffTable from '../List/StaffTable';
 
 const { Text } = Typography;
 
@@ -133,8 +133,7 @@ const DisciplineDetail = () => {
       {id && id !== 'new' && (
         <>
           <Divider />
-          <h3>Staff in this Discipline</h3>
-          <FilteredStaffTable disciplineId={id} />
+          <StaffTable disciplineId={id} />
         </>
       )}
     </div>
