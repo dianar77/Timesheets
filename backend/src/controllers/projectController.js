@@ -86,13 +86,14 @@ exports.getProjectForDropdown = async (req, res) => {
   exports.getProjectByVessel = async (req, res) => {
     try {
       const vesselId = req.params.vesselId;
-      const staffs = await Staff.findAll({
+      console.log('vesselIdaaa', vesselId);
+      const projects = await Project.findAll({
         where: { VesselID: vesselId },
         attributes: ['ProjectID', 'Name', 'Num', 'VesselID'] // Add or remove attributes as needed
       });
-      res.json(staffs);
+      res.json(projects);
     } catch (error) {
-      console.error('Error fetching staff by vessel:', error);
-      res.status(500).json({ message: 'Error fetching staff by vessel', error: error.message });
+      console.error('Error fetching project by vessel:', error);
+      res.status(500).json({ message: 'Error fetching project by vessel', error: error.message });
     }
   };

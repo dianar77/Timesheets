@@ -13,27 +13,26 @@ import DisciplineSidebar from './DisciplineSidebar';
 import StaffSidebar from './StaffSidebar';
 import ClientSidebar from './ClientSidebar';
 import ProjectSidebar from './ProjectSidebar';
+import VesselSidebar from './VesselSidebar';
+import WorkOrderSidebar from './WorkOrderSidebar';
 
-function Sidebar({ onDisciplineSelect, onStaffSelect, onClientSelect, onProjectSelect }) {
+function Sidebar({ onDisciplineSelect, onStaffSelect, onClientSelect, onProjectSelect,onVesselSelect,onWorkOrderSelect }) {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
         <h2>Dashboard</h2>
       </div>
       <Menu mode="inline" theme="dark">
-        <Menu.Item key="vessels" icon={<OrderedListOutlined />}>
-          <Link to="/vessels">Vessels</Link>
-        </Menu.Item>
+        <VesselSidebar onVesselSelect={onVesselSelect} />
         <Menu.Item key="timesheets" icon={<ClockCircleOutlined />}>
           <Link to="/timesheets">Timesheets</Link>
         </Menu.Item>
-        <Menu.Item key="workorders" icon={<FileOutlined />}>
-          <Link to="/workorders">Work Orders</Link>
-        </Menu.Item>
+        <WorkOrderSidebar onWorkOrderSelect={onWorkOrderSelect} />
         <ProjectSidebar onProjectSelect={onProjectSelect} />
         <ClientSidebar onClientSelect={onClientSelect} />
         <DisciplineSidebar onDisciplineSelect={onDisciplineSelect} />
         <StaffSidebar onStaffSelect={onStaffSelect} />
+        
       </Menu>
     </div>
   );
