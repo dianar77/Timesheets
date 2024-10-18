@@ -188,7 +188,7 @@ const VesselTable = ({ clientId = null }) => {
       title: 'Client',
       dataIndex: 'ClientID',
       key: 'ClientID',
-      editable: !clientId,
+      editable: true,
       render: (clientId) => {
         const client = clients.find(c => c.id === clientId);
         return client ? client.name : 'Unknown';
