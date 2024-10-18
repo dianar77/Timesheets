@@ -73,7 +73,7 @@ exports.getWorkOrderForDropdown = async (req, res) => {
       
       const formattedworkOrders = workOrders.map(d => ({
         id: d.WorkOrderID,
-        name: d.Name
+        name: d.Task + ' - ' + d.Description
       }));
       
       res.json(formattedworkOrders);

@@ -1,38 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { Menu } from 'antd';
-import { Link } from 'react-router-dom';
-import { UserOutlined } from '@ant-design/icons';
-import { getStaffsDropdownList } from '../services/Staffapi';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { ToolOutlined } from '@ant-design/icons';
 
 const { SubMenu } = Menu;
 
 function StaffSidebar({ onStaffSelect }) {
-  const [staff, setStaff] = useState([]);
+  const [staffs, setStaffs] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchStaff();
+    fetchStaffs();
   }, []);
 
-  const fetchStaff = async () => {
+  const fetchStaffs = async () => {
     try {
-      const response = await getStaffsDropdownList();
-      // Check if response is an array, if not, convert it to an array
-      const staffArray = Array.isArray(response) ? response : Object.values(response);
-      setStaff(staffArray);
+      const response = await axios.get('/api/staffs/dropdown/list');
+      setStaffs(response.data);
     } catch (error) {
-      console.error('Error fetching staff:', error);
+      console.error('Error fetching staffs:', error);
     }
   };
 
   const handleStaffClick = (staffId) => {
     onStaffSelect(staffId);
+    navigate(`/staffs/${staffId}`);
   };
 
   return (
-    <SubMenu key="staff" icon={<UserOutlined />} title={<Link to="/staffs">Staff</Link>}>
-      {staff.map(member => (
-        <Menu.Item key={`staff-${member.id}`} onClick={() => handleStaffClick(member.id)}>
-          {member.name}
+    <SubMenu key="staffs" icon={<ToolOutlined />} title={<Link to="/staffs">Staffs</Link>}>
+      {staffs.map(staff => (
+        <Menu.Item key={`staff-${staff.id}`} onClick={() => handleStaffClick(staff.id)}>
+          {staff.name}
         </Menu.Item>
       ))}
     </SubMenu>

@@ -26,8 +26,9 @@ const EditableCell = ({
     case 'select':
       inputNode = (
         <Select>
+          {console.log("XXXclients", clients)}
           {clients.map(client => (
-            <Option key={client.ClientID} value={client.ClientID}>{client.Name}</Option>
+            <Option key={client.id} value={client.id}>{client.name}</Option>
           ))}
         </Select>
       );
@@ -103,7 +104,7 @@ const VesselTable = () => {
   const fetchClientData = async () => {
     try {
       const clientData = await getClientDropdownList();
-      setClients(clientData);
+      setClients(clientData.data);
     } catch (error) {
       console.error('Error fetching clients:', error);
       message.error(`Error fetching client data: ${error.message}`);
@@ -228,7 +229,7 @@ const VesselTable = () => {
           allowClear
         >
           {clients.map(client => (
-            <Option key={client.ClientID} value={client.ClientID}>{client.Name}</Option>
+            <Option key={client.id} value={client.id}>{client.name}</Option>
           ))}
         </Select>
       </th>
@@ -268,13 +269,13 @@ const VesselTable = () => {
       key: 'ClientID',
       editable: true,
       render: (clientId) => {
-        const client = clients.find(c => c.ClientID === clientId);
-        return client ? client.Name : 'Unknown';
+        const client = clients.find(c => c.id === clientId);
+        return client ? client.name : 'Unknown';
       },
       sorter: (a, b) => {
-        const clientA = clients.find(c => c.ClientID === a.ClientID);
-        const clientB = clients.find(c => c.ClientID === b.ClientID);
-        return clientA.Name.localeCompare(clientB.Name);
+        const clientA = clients.find(c => c.id === a.ClientID);
+        const clientB = clients.find(c => c.id === b.ClientID);
+        return clientA.name.localeCompare(clientB.name);
       },
       sortOrder: sortedInfo.columnKey === 'ClientID' && sortedInfo.order,
     },

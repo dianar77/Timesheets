@@ -87,7 +87,7 @@ const WorkOrderTable = () => {
   const fetchProjects = async () => {
     try {
       const projectData = await getProjectDropdownList();
-      setProjects(projectData);
+      setProjects(projectData.data);
     } catch (error) {
       console.error('Error fetching projects:', error);
       message.error(`Error fetching project data: ${error.message}`);
@@ -184,8 +184,8 @@ const WorkOrderTable = () => {
       key: 'ProjectID',
       editable: true,
       render: (projectId) => {
-        const project = projects.find(p => p.ProjectID === projectId);
-        return project ? project.Name : 'Unknown';
+        const project = projects.find(p => p.id === projectId);
+        return project ? project.name : 'Unknown';
       },
     },
     {

@@ -130,7 +130,7 @@ const TimesheetTable = () => {
   const fetchStaff = async () => {
     try {
       const staffData = await getStaffsDropdownList();
-      setStaff(staffData);
+      setStaff(staffData.data);
     } catch (error) {
       console.error('Error fetching staff:', error);
       message.error(`Error fetching staff data: ${error.message}`);
@@ -141,7 +141,7 @@ const TimesheetTable = () => {
     try {
       const workOrderData = await getWorkOrderDropdownList();
       console.log('Work Order data received:', workOrderData);
-      setWorkOrders(workOrderData);
+      setWorkOrders(workOrderData.data);
     } catch (error) {
       console.error('Error fetching work orders:', error);
       message.error(`Error fetching work order data: ${error.message}`);
@@ -258,7 +258,7 @@ const TimesheetTable = () => {
           allowClear
         >
           {staff.map(s => (
-            <Option key={s.StaffID} value={s.StaffID}>{s.Name}</Option>
+            <Option key={s.id} value={s.id}>{s.name}</Option>
           ))}
         </Select>
       </th>
@@ -270,7 +270,7 @@ const TimesheetTable = () => {
           allowClear
         >
           {workOrders.map(wo => (
-            <Option key={wo.WorkOrderID} value={wo.WorkOrderID}>{`${wo.Task} - ${wo.Description}`}</Option>
+            <Option key={wo.id} value={wo.id}>{`${wo.name}`}</Option>
           ))}
         </Select>
       </th>
@@ -306,9 +306,9 @@ const TimesheetTable = () => {
         return staffMember ? staffMember.Name : 'Unknown';
       },
       sorter: (a, b) => {
-        const staffA = staff.find(s => s.StaffID === a.StaffID);
-        const staffB = staff.find(s => s.StaffID === b.StaffID);
-        return staffA.Name.localeCompare(staffB.Name);
+        const staffA = staff.find(s => s.id === a.StaffID);
+        const staffB = staff.find(s => s.id === b.StaffID);
+        return staffA.name.localeCompare(staffB.name);
       },
       sortOrder: sortedInfo.columnKey === 'StaffID' && sortedInfo.order,
     },
@@ -318,15 +318,15 @@ const TimesheetTable = () => {
       key: 'WorkOrderID',
       editable: true,
       render: (workOrderId) => {
-        const workOrder = workOrders.find(wo => wo.WorkOrderID === workOrderId);
-        return workOrder ? `${workOrder.Task} - ${workOrder.Description}` : 'Unknown';
+        const workOrder = workOrders.find(wo => wo.id === workOrderId);
+        return workOrder ? `${workOrder.name}` : 'Unknown';
       },
       sorter: (a, b) => {
-        const woA = workOrders.find(wo => wo.WorkOrderID === a.WorkOrderID);
-        const woB = workOrders.find(wo => wo.WorkOrderID === b.WorkOrderID);
+        const woA = workOrders.find(wo => wo.id === a.WorkOrderID);
+        const woB = workOrders.find(wo => wo.id === b.WorkOrderID);
         if (!woA || !woB) return 0;
-        const taskA = woA.Task ? woA.Task.toString() : '';
-        const taskB = woB.Task ? woB.Task.toString() : '';
+        const taskA = woA.name ? woA.name.toString() : '';
+        const taskB = woB.name ? woB.name.toString() : '';
         return taskA.localeCompare(taskB);
       },
       sortOrder: sortedInfo.columnKey === 'WorkOrderID' && sortedInfo.order,

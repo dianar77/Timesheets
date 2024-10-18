@@ -34,26 +34,14 @@ function StaffRoute() {
 
 function App() {
   const [selectedDisciplineId, setSelectedDisciplineId] = useState(null);
+  const [selectedStaffId, setSelectedStaffId] = useState(null);
 
   const handleDisciplineSelect = (disciplineId) => {
     setSelectedDisciplineId(disciplineId);
   };
 
-  const handleSave = () => {
-    setSelectedDisciplineId(null);
-  };
-
-  const handleDelete = () => {
-    setSelectedDisciplineId(null);
-  };
-
-  const handleCancel = () => {
-    setSelectedDisciplineId(null);
-  };
-
   const handleStaffSelect = (staffId) => {
-    // Handle staff selection
-    console.log('Selected staff:', staffId);
+    setSelectedStaffId(staffId);
   };
 
   return (

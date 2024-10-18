@@ -16,6 +16,7 @@ const StaffTable = ({ disciplineId }) => {
     try {
       setLoading(true);
       const staffData = await getStaffByDiscipline(disciplineId);
+      console.log('XXXStaff data received:', staffData);
       setStaff(staffData);
     } catch (error) {
       console.error('Error fetching staff:', error);
