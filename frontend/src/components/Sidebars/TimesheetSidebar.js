@@ -6,19 +6,17 @@ import { ClockCircleOutlined } from '@ant-design/icons';
 
 const { SubMenu } = Menu;
 
-function TimesheetSidebar({ onTimesheetSelect, isExpanded, onExpand  }) {
+function TimesheetSidebar({ onTimesheetSelect, isExpanded, onExpand }) {
   const [timesheets, setTimesheets] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('xxxttt', 'i am here');
     fetchTimesheets();
   }, []);
 
   const fetchTimesheets = async () => {
     try {
       const response = await axios.get('/api/timesheets/dropdown/list');
-      console.log('xxxttt', response.data);
       setTimesheets(response.data);
     } catch (error) {
       console.error('Error fetching timesheets:', error);
@@ -31,8 +29,13 @@ function TimesheetSidebar({ onTimesheetSelect, isExpanded, onExpand  }) {
   };
 
   return (
-    <SubMenu key="timesheets" icon={<ClockCircleOutlined />} title={<Link to="/timesheets">Timesheets</Link>} onTitleClick={onExpand}
-    open={isExpanded}>
+    <SubMenu
+      key="timesheets"
+      icon={<ClockCircleOutlined />}
+      title={<Link to="/timesheets">Timesheets</Link>}
+      onTitleClick={onExpand}
+      open={isExpanded}
+    >
       {timesheets.map(timesheet => (
         <Menu.Item key={`timesheet-${timesheet.id}`} onClick={() => handleTimesheetClick(timesheet.id)}>
           {`${timesheet.name}`}

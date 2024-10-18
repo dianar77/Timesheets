@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
-import { 
-  OrderedListOutlined, 
-  ClockCircleOutlined, 
-  TeamOutlined, 
-  FileOutlined, 
-  ProjectOutlined
-} from '@ant-design/icons';
 import './Sidebar.css';
 import DisciplineSidebar from './DisciplineSidebar';
 import StaffSidebar from './StaffSidebar';

@@ -29,8 +29,13 @@ function VesselSidebar({ onVesselSelect, isExpanded, onExpand }) {
   };
 
   return (
-    <SubMenu key="vessels" icon={<ToolOutlined />} title={<Link to="/vessels">Vessels</Link>} onTitleClick={onExpand}
-    open={isExpanded}>
+    <SubMenu
+      key="vessels"
+      icon={<ToolOutlined />}
+      title={<Link to="/vessels">Vessels</Link>}
+      onTitleClick={onExpand}
+      open={isExpanded}
+    >
       {vessels.map(vessel => (
         <Menu.Item key={`vessel-${vessel.id}`} onClick={() => handleVesselClick(vessel.id)}>
           {vessel.name}
@@ -41,5 +46,3 @@ function VesselSidebar({ onVesselSelect, isExpanded, onExpand }) {
 }
 
 export default VesselSidebar;
-
-

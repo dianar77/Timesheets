@@ -6,7 +6,7 @@ import { ProjectOutlined } from '@ant-design/icons';
 
 const { SubMenu } = Menu;
 
-function ProjectSidebar({ onProjectSelect , isExpanded, onExpand }) {
+function ProjectSidebar({ onProjectSelect, isExpanded, onExpand }) {
   const [projects, setProjects] = useState([]);
   const navigate = useNavigate();
 
@@ -29,8 +29,13 @@ function ProjectSidebar({ onProjectSelect , isExpanded, onExpand }) {
   };
 
   return (
-    <SubMenu key="projects" icon={<ProjectOutlined />} title={<Link to="/projects">Projects</Link>} onTitleClick={onExpand}
-    open={isExpanded}>
+    <SubMenu
+      key="projects"
+      icon={<ProjectOutlined />}
+      title={<Link to="/projects">Projects</Link>}
+      onTitleClick={onExpand}
+      open={isExpanded}
+    >
       {projects.map(project => (
         <Menu.Item key={`project-${project.id}`} onClick={() => handleProjectClick(project.id)}>
           {project.name}
