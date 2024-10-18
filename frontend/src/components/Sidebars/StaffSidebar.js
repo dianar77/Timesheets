@@ -33,7 +33,7 @@ function StaffSidebar({ onStaffSelect, isExpanded, onExpand }) {
       key="staffs"
       icon={<TeamOutlined />}
       title={<Link to="/staffs">Staffs</Link>}
-      onTitleClick={onExpand}
+      onClick={onExpand}
       open={isExpanded}
     >
       {staffs.map(staff => (

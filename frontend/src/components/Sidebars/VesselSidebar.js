@@ -33,7 +33,7 @@ function VesselSidebar({ onVesselSelect, isExpanded, onExpand }) {
       key="vessels"
       icon={<ToolOutlined />}
       title={<Link to="/vessels">Vessels</Link>}
-      onTitleClick={onExpand}
+      onClick={onExpand}
       open={isExpanded}
     >
       {vessels.map(vessel => (

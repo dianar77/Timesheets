@@ -33,7 +33,7 @@ function WorkOrderSidebar({ onWorkOrderSelect, isExpanded, onExpand }) {
       key="workorders"
       icon={<FileOutlined />}
       title={<Link to="/workorders">Work Orders</Link>}
-      onTitleClick={onExpand}
+      onClick={onExpand}
       open={isExpanded}
     >
       {workOrders.map(workOrder => (

@@ -33,7 +33,7 @@ function DisciplineSidebar({ onDisciplineSelect, isExpanded, onExpand }) {
       key="disciplines"
       icon={<ToolOutlined />}
       title={<Link to="/disciplines">Disciplines</Link>}
-      onTitleClick={onExpand}
+      onClick={onExpand}
       open={isExpanded}
     >
       {disciplines.map(discipline => (

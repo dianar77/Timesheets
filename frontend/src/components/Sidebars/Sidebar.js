@@ -15,6 +15,7 @@ function Sidebar({ onDisciplineSelect, onStaffSelect, onClientSelect, onProjectS
 
   const handleExpand = (item) => {
     setExpandedItem(expandedItem === item ? null : item);
+    console.log('xxxitem', expandedItem);
   };
 
   return (
