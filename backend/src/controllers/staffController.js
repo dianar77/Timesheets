@@ -81,3 +81,23 @@ exports.getStaffByDiscipline = async (req, res) => {
     res.status(500).json({ message: 'Error fetching staff by discipline', error: error.message });
   }
 };
+
+exports.getStaffForDropdown = async (req, res) => {
+  try {
+    const staff = await Staff.findAll({
+      attributes: ['StaffID', 'Name'],
+      order: [['Name', 'ASC']]
+    });
+    
+    const formattedstaff = staff.map(d => ({
+      id: d.StaffID,
+      name: d.Name
+    }));
+    
+    res.json(formattedstaff);
+  } catch (error) {
+    console.error('Error fetching staff for dropdown:', error);
+    res.status(500).json({ message: 'Error fetching staff for dropdown', error: error.message });
+  }
+};
+

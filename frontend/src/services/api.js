@@ -179,7 +179,7 @@ export const getDiscipline = async (id) => {
 
 // Add these functions to the existing api.js file
 
-export const getStaff = async () => {
+export const getStaffs = async () => {
   try {
     const response = await axios.get('/api/staff');
     return response.data;
@@ -215,5 +215,20 @@ export const getStaffByDiscipline = async (disciplineId) => {
     throw error;
   }
 };
+
+export const getStaffDropdownList = () => {
+  return axios.get('/api/staff/dropdown/list');
+};
+
+export const getStaff = async (id) => {
+  try {
+    const response = await axios.get(`/api/staff/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching staff:', error);
+    throw error;
+  }
+};
+
 
 export default api;

@@ -40,10 +40,18 @@ function App() {
     setSelectedDisciplineId(null);
   };
 
+  const handleStaffSelect = (staffId) => {
+    // Handle staff selection
+    console.log('Selected staff:', staffId);
+  };
+
   return (
     <Router>
       <div className="app" style={{ display: 'flex' }}>
-        <Sidebar onDisciplineSelect={handleDisciplineSelect} />
+        <Sidebar 
+          onDisciplineSelect={handleDisciplineSelect} 
+          onStaffSelect={handleStaffSelect}
+        />
         <div className="content" style={{ flex: 1, padding: '20px' }}>
           <Routes>
             <Route path="/clients" element={<ClientsTable />} />
