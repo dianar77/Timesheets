@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, InputNumber, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { fetchVessels, createVessel, updateVessel, deleteVessel, getClients } from '../../services/api';
+import { getVessels, createVessel, updateVessel, deleteVessel, getClients } from '../../services/api';
 import './VesselTable.css';
 
 const { Option } = Select;
@@ -85,7 +85,7 @@ const VesselTable = () => {
   const fetchVesselData = async () => {
     try {
       setLoading(true);
-      const data = await fetchVessels();
+      const data = await getVessels();
       if (Array.isArray(data)) {
         setVessels(data);
       } else {

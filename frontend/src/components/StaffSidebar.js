@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { UserOutlined } from '@ant-design/icons';
 import { getStaffDropdownList } from '../services/api';
 
@@ -8,7 +8,6 @@ const { SubMenu } = Menu;
 
 function StaffSidebar({ onStaffSelect }) {
   const [staff, setStaff] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchStaff();
@@ -17,7 +16,9 @@ function StaffSidebar({ onStaffSelect }) {
   const fetchStaff = async () => {
     try {
       const response = await getStaffDropdownList();
-      setStaff(response.data);
+      // Check if response is an array, if not, convert it to an array
+      const staffArray = Array.isArray(response) ? response : Object.values(response);
+      setStaff(staffArray);
     } catch (error) {
       console.error('Error fetching staff:', error);
     }
@@ -25,7 +26,6 @@ function StaffSidebar({ onStaffSelect }) {
 
   const handleStaffClick = (staffId) => {
     onStaffSelect(staffId);
-    navigate(`/staff/${staffId}`);
   };
 
   return (

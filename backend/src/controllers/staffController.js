@@ -2,8 +2,8 @@ const Staff = require('../models/staff');
 
 exports.getAllStaff = async (req, res) => {
   try {
-    const staff = await Staff.findAll();
-    res.json(staff);
+    const staffs = await Staff.findAll();
+    res.json(staffs);
   } catch (error) {
     console.error('Error fetching staff:', error);
     res.status(500).json({ message: 'Error fetching staff', error: error.message });
@@ -67,37 +67,37 @@ exports.deleteStaff = async (req, res) => {
   }
 };
 
-exports.getStaffByDiscipline = async (req, res) => {
-  try {
-    const disciplineId = req.params.disciplineId;
-    console.log('here xxxb',disciplineId);
-    const staff = await Staff.findAll({
-      where: { DisciplineID: disciplineId },
-      attributes: ['StaffID', 'Name', 'PersonalID', 'DisciplineID'] // Add or remove attributes as needed
-    });
-    res.json(staff);
-  } catch (error) {
-    console.error('Error fetching staff by discipline:', error);
-    res.status(500).json({ message: 'Error fetching staff by discipline', error: error.message });
-  }
-};
-
 exports.getStaffForDropdown = async (req, res) => {
   try {
-    const staff = await Staff.findAll({
+    const staffs = await Staff.findAll({
       attributes: ['StaffID', 'Name'],
       order: [['Name', 'ASC']]
     });
     
-    const formattedstaff = staff.map(d => ({
+    const formattedstaffs = staffs.map(d => ({
       id: d.StaffID,
       name: d.Name
     }));
     
-    res.json(formattedstaff);
+    res.json(formattedstaffs);
   } catch (error) {
     console.error('Error fetching staff for dropdown:', error);
     res.status(500).json({ message: 'Error fetching staff for dropdown', error: error.message });
+  }
+};
+
+exports.getStaffByDiscipline = async (req, res) => {
+  try {
+    const disciplineId = req.params.disciplineId;
+    console.log('here xxxb',disciplineId);
+    const staffs = await Staff.findAll({
+      where: { DisciplineID: disciplineId },
+      attributes: ['StaffID', 'Name', 'PersonalID', 'DisciplineID'] // Add or remove attributes as needed
+    });
+    res.json(staffs);
+  } catch (error) {
+    console.error('Error fetching staff by discipline:', error);
+    res.status(500).json({ message: 'Error fetching staff by discipline', error: error.message });
   }
 };
 

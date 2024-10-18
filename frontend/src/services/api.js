@@ -44,13 +44,13 @@ export const updateTimesheet = async (id, timesheetData) => {
 export const deleteTimesheet = (id) => api.delete(`/timesheets/${id}`);
 
 
-export const getStaffById = (id) => api.get(`/staff/${id}`);
-
 // Work Order endpoints
 export const getWorkOrders = async () => {
   const response = await axios.get('/api/workorders');
   return response.data;
 };
+
+export const getWorkOrderById = (id) => api.get(`/workorders/${id}`);
 
 export const createWorkOrder = async (workOrder) => {
   const response = await axios.post('/api/workorders', workOrder);
@@ -67,13 +67,14 @@ export const deleteWorkOrder = async (id) => {
   return response.data;
 };
 
-export const getWorkOrderById = (id) => api.get(`/workorders/${id}`);
 
 // Project endpoints
 export const getProjects = async () => {
   const response = await axios.get('/api/projects');
   return response.data;
 };
+
+export const getProjectById = (id) => api.get(`/projects/${id}`);
 
 export const createProject = async (project) => {
   const response = await axios.post('/api/projects', project);
@@ -90,13 +91,14 @@ export const deleteProject = async (id) => {
   return response.data;
 };
 
-export const getProjectById = (id) => api.get(`/projects/${id}`);
 
 // Vessel endpoints
-export const fetchVessels = async () => {
+export const getVessels = async () => {
   const response = await api.get('/vessels');
   return response.data;
 };
+
+export const getVesselById = (id) => api.get(`/vessels/${id}`);
 
 export const createVessel = async (vesselData) => {
   const response = await api.post('/vessels', vesselData);
@@ -116,15 +118,15 @@ export const deleteVessel = async (id) => {
 // Client endpoints
 export const getClients = async () => {
   try {
-    console.log('Fetching clients from:', `${API_URL}/clients`);
     const response = await api.get('/clients');
-    console.log('Client data received:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching clients:', error);
     throw error;
   }
 };
+
+export const getClientById = (id) => api.get(`/clients/${id}`);
 
 export const createClient = async (clientData) => {
   const response = await api.post('/clients', clientData);
@@ -141,16 +143,14 @@ export const deleteClient = async (id) => {
   return response.data;
 };
 
-export const getVessels = async () => {
-  const response = await axios.get('/api/vessels');
-  return response.data;
-};
 
 // Discipline endpoints
 export const getDisciplines = async () => {
   const response = await axios.get('/api/disciplines');
   return response.data;
 };
+
+export const getDisciplineById = (id) => api.get(`/disciplines/${id}`);
 
 export const createDiscipline = async (discipline) => {
   const response = await axios.post('/api/disciplines', discipline);
@@ -167,18 +167,9 @@ export const deleteDiscipline = async (id) => {
   return response.data;
 };
 
-export const getDiscipline = async (id) => {
-  try {
-    const response = await axios.get(`/api/disciplines/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching discipline:', error);
-    throw error;
-  }
-};
+
 
 // Add these functions to the existing api.js file
-
 export const getStaffs = async () => {
   try {
     const response = await axios.get('/api/staff');
@@ -188,6 +179,8 @@ export const getStaffs = async () => {
     throw error;
   }
 };
+
+export const getStaffById = (id) => api.get(`/staff/${id}`);
 
 export const createStaff = async (staff) => {
   const response = await axios.post('/api/staff', staff);
@@ -220,15 +213,6 @@ export const getStaffDropdownList = () => {
   return axios.get('/api/staff/dropdown/list');
 };
 
-export const getStaff = async (id) => {
-  try {
-    const response = await axios.get(`/api/staff/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching staff:', error);
-    throw error;
-  }
-};
 
 
 export default api;

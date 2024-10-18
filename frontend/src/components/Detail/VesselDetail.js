@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, InputNumber, Select, Button, message } from 'antd';
-import { fetchVessels, createVessel, updateVessel, deleteVessel, getClients } from '../../services/api';
+import { getVessels, createVessel, updateVessel, deleteVessel, getClients } from '../../services/api';
 
 const { Option } = Select;
 
@@ -29,7 +29,7 @@ const VesselDetail = ({ vesselId, onSave, onDelete, onCancel }) => {
   const fetchVesselData = async (id) => {
     try {
       setLoading(true);
-      const vesselData = await fetchVessels(id);
+      const vesselData = await getVessels(id);
       form.setFieldsValue(vesselData);
     } catch (error) {
       console.error('Error fetching vessel:', error);

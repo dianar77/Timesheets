@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, message, Typography, Divider, Select } from 'antd';
 import { getStaffById, createStaff, updateStaff, deleteStaff, getDisciplines } from '../../services/api';
-import { useParams, useNavigate } from 'react-router-dom';
+import TimesheetTable from '../List/TimesheetTable';
 
 const { Text } = Typography;
 const { Option } = Select;
 
-const StaffDetail = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+const StaffDetail = ({ staffId, onClose }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -17,12 +15,12 @@ const StaffDetail = () => {
 
   useEffect(() => {
     fetchDisciplines();
-    if (id && id !== 'new') {
-      fetchStaffData(id);
-    } else if (id === 'new') {
+    if (staffId && staffId !== 'new') {
+      fetchStaffData(staffId);
+    } else if (staffId === 'new') {
       setEditMode(true);
     }
-  }, [id]);
+  }, [staffId]);
 
   const fetchStaffData = async (id) => {
     try {
@@ -56,11 +54,11 @@ const StaffDetail = () => {
     try {
       setLoading(true);
       let savedStaff;
-      if (id === 'new') {
+      if (staffId === 'new') {
         savedStaff = await createStaff(values);
         message.success('Staff created successfully');
       } else {
-        savedStaff = await updateStaff(id, values);
+        savedStaff = await updateStaff(staffId, values);
         message.success('Staff updated successfully');
       }
       setEditMode(false);
@@ -76,19 +74,15 @@ const StaffDetail = () => {
   const handleDelete = async () => {
     try {
       setLoading(true);
-      await deleteStaff(id);
+      await deleteStaff(staffId);
       message.success('Staff deleted successfully');
-      navigate('/staff');
+      onClose();
     } catch (error) {
       console.error('Error deleting staff:', error);
       message.error(`Error deleting staff: ${error.message}`);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleBack = () => {
-    navigate('/staff');
   };
 
   const toggleEditMode = () => {
@@ -112,7 +106,7 @@ const StaffDetail = () => {
           <Button onClick={handleDelete} danger style={{ marginRight: 8 }}>
             Delete
           </Button>
-          <Button onClick={handleBack}>Back to List</Button>
+          <Button onClick={onClose}>Close</Button>
         </div>
       ) : (
         <Form form={form} onFinish={onFinish} layout="vertical">
@@ -147,18 +141,22 @@ const StaffDetail = () => {
             <Button type="primary" htmlType="submit" loading={loading} style={{ marginRight: 8 }}>
               Save
             </Button>
-            {id !== 'new' && (
+            {staffId !== 'new' && (
               <Button onClick={toggleEditMode} style={{ marginRight: 8 }}>
                 Cancel
               </Button>
             )}
-            <Button onClick={handleBack}>Back to List</Button>
+            <Button onClick={onClose}>Close</Button>
           </Form.Item>
         </Form>
       )}
       
-      <Divider />
-      {/* You can add related information here, such as timesheets for this staff member */}
+      {staffId && staffId !== 'new' && (
+        <>
+          <Divider />
+          <TimesheetTable staffId={staffId} />
+        </>
+      )}
     </div>
   );
 };

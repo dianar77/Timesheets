@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, InputNumber, Button, message, Typography, Divider } from 'antd';
-import { getDiscipline, createDiscipline, updateDiscipline, deleteDiscipline } from '../../services/api';
+import { getDisciplineById, createDiscipline, updateDiscipline, deleteDiscipline } from '../../services/api';
 import { useParams, useNavigate } from 'react-router-dom';
 import StaffTable from '../List/StaffTable';
 
@@ -25,7 +25,7 @@ const DisciplineDetail = () => {
   const fetchDisciplineData = async (id) => {
     try {
       setLoading(true);
-      const data = await getDiscipline(id);
+      const data = await getDisciplineById(id);
       setDisciplineData(data);
       form.setFieldsValue({
         Name: data.Name,

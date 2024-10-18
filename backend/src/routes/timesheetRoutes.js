@@ -7,5 +7,6 @@ router.get('/:id', timesheetController.getTimesheetById);
 router.post('/', timesheetController.createTimesheet);
 router.put('/:id', timesheetController.updateTimesheet);
 router.delete('/:id', timesheetController.deleteTimesheet);
+router.get('/staff/:staffId', timesheetController.getTimesheetByStaff);
 
 module.exports = router;

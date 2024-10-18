@@ -107,3 +107,17 @@ exports.deleteTimesheet = async (req, res) => {
     res.status(500).json({ message: 'Error deleting timesheet', error: error.message });
   }
 };
+
+exports.getTimesheetByStaff = async (req, res) => {
+  try {
+    const staffId = req.params.staffId;
+    const timesheets = await Timesheet.findAll({
+      where: { StaffID: staffId },
+      attributes: ['TimesheetID', 'Name', 'PersonalID', 'StaffID'] // Add or remove attributes as needed
+    });
+    res.json(timesheets);
+  } catch (error) {
+    console.error('Error fetching timesheet by staff:', error);
+    res.status(500).json({ message: 'Error fetching timesheet by staff', error: error.message });
+  }
+};

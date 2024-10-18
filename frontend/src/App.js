@@ -8,6 +8,7 @@ import ProjectTable from './components/List/ProjectTable';
 import DisciplineTable from './components/List/DisciplineTable';
 import DisciplineDetail from './components/Detail/DisciplineDetail';
 import StaffTable from './components/List/StaffTable';
+import StaffDetail from './components/Detail/StaffDetail';
 import Sidebar from './components/Sidebar';
 import './App.css';
 
@@ -18,6 +19,16 @@ function DisciplineRoute() {
     <DisciplineDetail />
   ) : (
     <DisciplineTable />
+  );
+}
+
+function StaffRoute() {
+  const { id } = useParams();
+
+  return id ? (
+    <StaffDetail />
+  ) : (
+    <StaffTable />
   );
 }
 
@@ -61,7 +72,8 @@ function App() {
             <Route path="/projects" element={<ProjectTable />} />
             <Route path="/disciplines" element={<DisciplineRoute />} />
             <Route path="/disciplines/:id" element={<DisciplineRoute />} />
-            <Route path="/staff" element={<StaffTable />} />
+            <Route path="/staffs" element={<StaffRoute />} />
+            <Route path="/staffs/:id" element={<StaffRoute />} />
           </Routes>
         </div>
       </div>
