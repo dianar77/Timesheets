@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, message } from 'antd';
-import { getClients, createClient, updateClient, deleteClient } from '../../services/api';
+import { getClients, createClient, updateClient, deleteClient } from '../../services/Clientapi';
 
 const ClientDetail = ({ clientId, onSave, onDelete, onCancel }) => {
   const [form] = Form.useForm();

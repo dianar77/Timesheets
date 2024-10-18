@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, InputNumber, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getVessels, createVessel, updateVessel, deleteVessel, getClients } from '../../services/api';
+import { getVessels, createVessel, updateVessel, deleteVessel } from '../../services/Vesselapi';
+import { getClientDropdownList } from '../../services/Clientapi';
 import './VesselTable.css';
 
 const { Option } = Select;
@@ -101,7 +102,7 @@ const VesselTable = () => {
 
   const fetchClientData = async () => {
     try {
-      const clientData = await getClients();
+      const clientData = await getClientDropdownList();
       setClients(clientData);
     } catch (error) {
       console.error('Error fetching clients:', error);

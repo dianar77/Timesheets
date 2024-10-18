@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { UserOutlined } from '@ant-design/icons';
-import { getStaffDropdownList } from '../services/api';
+import { getStaffsDropdownList } from '../services/Staffapi';
 
 const { SubMenu } = Menu;
 
@@ -15,7 +15,7 @@ function StaffSidebar({ onStaffSelect }) {
 
   const fetchStaff = async () => {
     try {
-      const response = await getStaffDropdownList();
+      const response = await getStaffsDropdownList();
       // Check if response is an array, if not, convert it to an array
       const staffArray = Array.isArray(response) ? response : Object.values(response);
       setStaff(staffArray);

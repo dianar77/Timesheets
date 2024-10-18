@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, InputNumber, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getWorkOrders, updateWorkOrder, deleteWorkOrder, createWorkOrder, getProjects } from '../../services/api';
+import { getWorkOrders, updateWorkOrder, deleteWorkOrder, createWorkOrder } from '../../services/WorkOrderapi';
+import { getProjectDropdownList } from '../../services/Projectapi';
 import './WorkOrderTable.css';
 
 const { Option } = Select;
@@ -85,7 +86,7 @@ const WorkOrderTable = () => {
 
   const fetchProjects = async () => {
     try {
-      const projectData = await getProjects();
+      const projectData = await getProjectDropdownList();
       setProjects(projectData);
     } catch (error) {
       console.error('Error fetching projects:', error);

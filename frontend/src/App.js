@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useParams } from 'react-router-dom';
-import ClientsTable from './components/List/ClientsTable';
+import ClientTable from './components/List/ClientTable';
 import TimesheetTable from './components/List/TimesheetTable';
 import VesselTable from './components/List/VesselTable';
 import WorkOrderTable from './components/List/WorkOrderTable';
@@ -65,7 +65,7 @@ function App() {
         />
         <div className="content" style={{ flex: 1, padding: '20px' }}>
           <Routes>
-            <Route path="/clients" element={<ClientsTable />} />
+            <Route path="/clients" element={<ClientTable />} />
             <Route path="/timesheets" element={<TimesheetTable />} />
             <Route path="/vessels" element={<VesselTable />} />
             <Route path="/workorders" element={<WorkOrderTable />} />

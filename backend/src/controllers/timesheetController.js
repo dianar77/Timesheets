@@ -37,9 +37,6 @@ exports.createTimesheet = async (req, res) => {
 
 exports.updateTimesheet = async (req, res) => {
   try {
-    console.log('Updating timesheet with ID:', req.params.id);
-    console.log('Received update data:', req.body);
-
     // Validate input data
     if (!req.body.StaffID || !req.body.WorkOrderID || !req.body.Hours) {
       throw new Error('Missing required fields');
@@ -54,7 +51,6 @@ exports.updateTimesheet = async (req, res) => {
       }
       formattedDate = parsedDate.format('YYYY-MM-DD');
     }
-    console.log('Formatted date:', formattedDate);
 
     const updateData = {
       ...req.body,
@@ -64,19 +60,14 @@ exports.updateTimesheet = async (req, res) => {
       Hours: Number(req.body.Hours)
     };
 
-    console.log('Processed update data:', updateData);
-
     const [updated] = await Timesheet.update(updateData, {
       where: { TimesheetID: req.params.id }
     });
-    console.log('Update result:', updated);
 
     if (updated) {
       const updatedTimesheet = await Timesheet.findByPk(req.params.id);
-      console.log('Updated timesheet:', updatedTimesheet);
       res.json(updatedTimesheet);
     } else {
-      console.log('Timesheet not found for update');
       res.status(404).json({ message: 'Timesheet not found' });
     }
   } catch (error) {
@@ -108,16 +99,51 @@ exports.deleteTimesheet = async (req, res) => {
   }
 };
 
+exports.getTimesheetForDropdown = async (req, res) => {
+  try {
+    const timesheets = await Timesheet.findAll({
+      attributes: ['TimesheetID', 'Name'],
+      order: [['Name', 'ASC']]
+    });
+    
+    const formattedtimesheets = timesheets.map(d => ({
+      id: d.TimesheetID,
+      name: d.Name
+    }));
+    
+    res.json(formattedtimesheets);
+  } catch (error) {
+    console.error('Error fetching timesheets for dropdown:', error);
+    res.status(500).json({ message: 'Error fetching timesheets for dropdown', error: error.message });
+  }
+};
+
+
 exports.getTimesheetByStaff = async (req, res) => {
   try {
     const staffId = req.params.staffId;
     const timesheets = await Timesheet.findAll({
       where: { StaffID: staffId },
-      attributes: ['TimesheetID', 'Name', 'PersonalID', 'StaffID'] // Add or remove attributes as needed
+      attributes: ['TimesheetID', 'StaffID', 'WorkOrderID', 'Date', 'Hours'] // Add or remove attributes as needed
     });
     res.json(timesheets);
   } catch (error) {
     console.error('Error fetching timesheet by staff:', error);
     res.status(500).json({ message: 'Error fetching timesheet by staff', error: error.message });
+  }
+};
+
+exports.getTimesheetByWorkOrder = async (req, res) => {
+  try {
+    const workOrderId = req.params.workOrderId;
+
+    const timesheets = await Timesheet.findAll({
+      where: { WorkOrderID: workOrderId },
+      attributes: ['TimesheetID', 'StaffID', 'WorkOrderID', 'Date', 'Hours'] // Add or remove attributes as needed
+    });
+    res.json(timesheets);
+  } catch (error) {
+    console.error('Error fetching timesheet by workOrder:', error);
+    res.status(500).json({ message: 'Error fetching timesheet by workOrder', error: error.message });
   }
 };

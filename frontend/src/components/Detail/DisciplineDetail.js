@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, InputNumber, Button, message, Typography, Divider } from 'antd';
-import { getDisciplineById, createDiscipline, updateDiscipline, deleteDiscipline } from '../../services/api';
+import { getDisciplineById, createDiscipline, updateDiscipline, deleteDiscipline } from '../../services/Disciplineapi';
 import { useParams, useNavigate } from 'react-router-dom';
 import StaffTable from '../List/StaffTable';
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, message, Typography, Divider, Select } from 'antd';
-import { getStaffById, createStaff, updateStaff, deleteStaff, getDisciplines } from '../../services/api';
+import { getStaffById, createStaff, updateStaff, deleteStaff } from '../../services/Staffapi';
+import { getDisciplinesDropdownList } from '../../services/Disciplineapi';
 import TimesheetTable from '../List/TimesheetTable';
 
 const { Text } = Typography;
@@ -42,7 +43,7 @@ const StaffDetail = ({ staffId, onClose }) => {
 
   const fetchDisciplines = async () => {
     try {
-      const disciplinesData = await getDisciplines();
+      const disciplinesData = await getDisciplinesDropdownList();
       setDisciplines(disciplinesData);
     } catch (error) {
       console.error('Error fetching disciplines:', error);

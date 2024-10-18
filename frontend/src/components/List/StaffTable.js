@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, message } from 'antd';
-import { getStaffByDiscipline, deleteStaff } from '../../services/api';
+import { getStaffByDiscipline, deleteStaff } from '../../services/Staffapi';
 import { Link } from 'react-router-dom';
 import './StaffTable.css';
 

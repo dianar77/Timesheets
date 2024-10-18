@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, InputNumber, Select, Button, message } from 'antd';
-import { getVessels, createVessel, updateVessel, deleteVessel, getClients } from '../../services/api';
+import { getVessels, createVessel, updateVessel, deleteVessel } from '../../services/Vesselapi';
+import { getClientDropdownList } from '../../services/Clientapi';
 
 const { Option } = Select;
 
@@ -18,7 +19,7 @@ const VesselDetail = ({ vesselId, onSave, onDelete, onCancel }) => {
 
   const fetchClientData = async () => {
     try {
-      const clientData = await getClients();
+      const clientData = await getClientDropdownList();
       setClients(clientData);
     } catch (error) {
       console.error('Error fetching clients:', error);

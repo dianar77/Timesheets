@@ -63,3 +63,37 @@ exports.deleteWorkOrder = async (req, res) => {
     res.status(500).json({ message: 'Error deleting Work Order', error: error.message });
   }
 };
+
+exports.getWorkOrderForDropdown = async (req, res) => {
+    try {
+      const workOrders = await WorkOrder.findAll({
+        attributes: ['WorkOrderID', 'Name'],
+        order: [['Name', 'ASC']]
+      });
+      
+      const formattedworkOrders = workOrders.map(d => ({
+        id: d.WorkOrderID,
+        name: d.Name
+      }));
+      
+      res.json(formattedworkOrders);
+    } catch (error) {
+      console.error('Error fetching work orders for dropdown:', error);
+      res.status(500).json({ message: 'Error fetching work orders for dropdown', error: error.message });
+    }
+  };
+
+  exports.getWorkOrderByProject = async (req, res) => {
+    try {
+      const projectId = req.params.projectId;
+      const workOrders = await WorkOrder.findAll({
+        where: { ProjectID: projectId },
+        attributes: ['WorkOrderID', 'Task', 'Description', 'ProjectID'] // Add or remove attributes as needed
+      });
+      res.json(workOrders);
+    } catch (error) {
+      console.error('Error fetching work order by project:', error);
+      res.status(500).json({ message: 'Error fetching work order by project', error: error.message });
+    }
+  };
+

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, DatePicker, InputNumber, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getTimesheets, updateTimesheet, deleteTimesheet, createTimesheet, getStaffs, getWorkOrders } from '../../services/api';
+import { getTimesheets, updateTimesheet, deleteTimesheet, createTimesheet } from '../../services/Timesheetapi';
+import { getWorkOrderDropdownList } from '../../services/WorkOrderapi';
+import { getStaffsDropdownList } from '../../services/Staffapi';
 import moment from 'moment';
 import './TimesheetTable.css';
 
@@ -105,7 +107,6 @@ const TimesheetTable = () => {
     try {
       setLoading(true);
       const data = await getTimesheets();
-      console.log('Timesheet data in component:', data);
       if (Array.isArray(data)) {
         setTimesheets(data);
       } else if (data && typeof data === 'object') {
@@ -128,8 +129,7 @@ const TimesheetTable = () => {
 
   const fetchStaff = async () => {
     try {
-      const staffData = await getStaffs();
-      console.log('Staff data received:', staffData);
+      const staffData = await getStaffsDropdownList();
       setStaff(staffData);
     } catch (error) {
       console.error('Error fetching staff:', error);
@@ -139,7 +139,7 @@ const TimesheetTable = () => {
 
   const fetchWorkOrders = async () => {
     try {
-      const workOrderData = await getWorkOrders();
+      const workOrderData = await getWorkOrderDropdownList();
       console.log('Work Order data received:', workOrderData);
       setWorkOrders(workOrderData);
     } catch (error) {
@@ -245,7 +245,6 @@ const TimesheetTable = () => {
   });
 
   const handleChange = (pagination, filters, sorter) => {
-    console.log('Various parameters', pagination, filters, sorter);
     setSortedInfo(sorter);
   };
 

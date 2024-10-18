@@ -2,9 +2,7 @@ const Vessel = require('../models/Vessel');
 
 exports.getAllVessels = async (req, res) => {
   try {
-    console.log('Fetching all vessels');
     const vessels = await Vessel.findAll();
-    console.log('Vessels fetched:', vessels);
     res.json(vessels);
   } catch (error) {
     console.error('Error fetching vessels:', error);
@@ -68,3 +66,36 @@ exports.deleteVessel = async (req, res) => {
     res.status(500).json({ message: 'Error deleting vessel', error: error.message });
   }
 };
+
+exports.getVesselForDropdown = async (req, res) => {
+    try {
+      const vessels = await Vessel.findAll({
+        attributes: ['VesselID', 'Name'],
+        order: [['Name', 'ASC']]
+      });
+      
+      const formattedvessels = vessels.map(d => ({
+        id: d.VesselID,
+        name: d.Name
+      }));
+      
+      res.json(formattedvessels);
+    } catch (error) {
+      console.error('Error fetching vessels for dropdown:', error);
+      res.status(500).json({ message: 'Error fetching vessels for dropdown', error: error.message });
+    }
+  };
+
+  exports.getVesselByClient = async (req, res) => {
+    try {
+      const clientId = req.params.clientId;
+      const vessels = await Vessel.findAll({
+        where: { ClientID: clientId },
+        attributes: ['VesselID', 'Name', 'Num', 'ClientID'] // Add or remove attributes as needed
+      });
+      res.json(vessels);
+    } catch (error) {
+      console.error('Error fetching vessel by client:', error);
+      res.status(500).json({ message: 'Error fetching vessel by client', error: error.message });
+    }
+  };

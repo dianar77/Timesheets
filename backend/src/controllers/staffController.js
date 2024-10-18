@@ -89,7 +89,6 @@ exports.getStaffForDropdown = async (req, res) => {
 exports.getStaffByDiscipline = async (req, res) => {
   try {
     const disciplineId = req.params.disciplineId;
-    console.log('here xxxb',disciplineId);
     const staffs = await Staff.findAll({
       where: { DisciplineID: disciplineId },
       attributes: ['StaffID', 'Name', 'PersonalID', 'DisciplineID'] // Add or remove attributes as needed

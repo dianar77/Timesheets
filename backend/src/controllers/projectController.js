@@ -63,3 +63,36 @@ exports.deleteProject = async (req, res) => {
     res.status(500).json({ message: 'Error deleting project', error: error.message });
   }
 };
+
+exports.getProjectForDropdown = async (req, res) => {
+    try {
+      const projects = await Project.findAll({
+        attributes: ['ProjectID', 'Name'],
+        order: [['Name', 'ASC']]
+      });
+      
+      const formattedprojects = projects.map(d => ({
+        id: d.ProjectID,
+        name: d.Name
+      }));
+      
+      res.json(formattedprojects);
+    } catch (error) {
+      console.error('Error fetching projects for dropdown:', error);
+      res.status(500).json({ message: 'Error fetching projects for dropdown', error: error.message });
+    }
+  };
+
+  exports.getProjectByVessel = async (req, res) => {
+    try {
+      const vesselId = req.params.vesselId;
+      const staffs = await Staff.findAll({
+        where: { VesselID: vesselId },
+        attributes: ['ProjectID', 'Name', 'Num', 'VesselID'] // Add or remove attributes as needed
+      });
+      res.json(staffs);
+    } catch (error) {
+      console.error('Error fetching staff by vessel:', error);
+      res.status(500).json({ message: 'Error fetching staff by vessel', error: error.message });
+    }
+  };

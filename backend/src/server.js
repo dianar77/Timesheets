@@ -19,13 +19,13 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/timesheets', timesheetRoutes);
-app.use('/api/staff', staffRoutes);
+app.use('/api/staffs', staffRoutes);
 app.use('/api/vessels', vesselRoutes);
 app.use('/api/workorders', workOrderRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/disciplines', disciplineRoutes);
-app.use('/api/staff', staffRoutes);
+
 
 async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);

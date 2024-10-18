@@ -64,3 +64,22 @@ exports.deleteClient = async (req, res) => {
     res.status(500).json({ message: 'Error deleting client', error: error.message });
   }
 };
+
+exports.getClientForDropdown = async (req, res) => {
+    try {
+      const clients = await Client.findAll({
+        attributes: ['ClientID', 'Name'],
+        order: [['Name', 'ASC']]
+      });
+      
+      const formattedclients = clients.map(d => ({
+        id: d.ClientID,
+        name: d.Name
+      }));
+      
+      res.json(formattedclients);
+    } catch (error) {
+      console.error('Error fetching clients for dropdown:', error);
+      res.status(500).json({ message: 'Error fetching clients for dropdown', error: error.message });
+    }
+  };

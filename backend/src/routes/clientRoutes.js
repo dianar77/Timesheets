@@ -17,4 +17,6 @@ router.put('/:id', clientController.updateClient);
 // DELETE a client
 router.delete('/:id', clientController.deleteClient);
 
+router.get('/dropdown/list', clientController.getClientForDropdown);
+
 module.exports = router;

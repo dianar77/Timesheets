@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getProjects, updateProject, deleteProject, createProject, getVessels } from '../../services/api';
+import { getProjects, updateProject, deleteProject, createProject } from '../../services/Projectapi';
+import { getVesselDropdownList } from '../../services/Vesselapi';
 import './ProjectTable.css';
 
 const { Option } = Select;
@@ -85,7 +86,7 @@ const ProjectTable = () => {
 
   const fetchVessels = async () => {
     try {
-      const vesselData = await getVessels();
+      const vesselData = await getVesselDropdownList();
       setVessels(vesselData);
     } catch (error) {
       console.error('Error fetching vessels:', error);
