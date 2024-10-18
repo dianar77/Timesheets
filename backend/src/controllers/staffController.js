@@ -66,3 +66,18 @@ exports.deleteStaff = async (req, res) => {
     res.status(500).json({ message: 'Error deleting staff', error: error.message });
   }
 };
+
+exports.getStaffByDiscipline = async (req, res) => {
+  try {
+    const disciplineId = req.params.disciplineId;
+    console.log('here xxxb',disciplineId);
+    const staff = await Staff.findAll({
+      where: { DisciplineID: disciplineId },
+      attributes: ['StaffID', 'Name', 'PersonalID', 'DisciplineID'] // Add or remove attributes as needed
+    });
+    res.json(staff);
+  } catch (error) {
+    console.error('Error fetching staff by discipline:', error);
+    res.status(500).json({ message: 'Error fetching staff by discipline', error: error.message });
+  }
+};

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, InputNumber, Button, message, Typography } from 'antd';
+import { Form, Input, InputNumber, Button, message, Typography, Divider } from 'antd';
 import { getDiscipline, createDiscipline, updateDiscipline, deleteDiscipline } from '../../services/api';
 import { useParams, useNavigate } from 'react-router-dom';
+import FilteredStaffTable from '../List/FilteredStaffTable';
 
 const { Text } = Typography;
 
@@ -127,6 +128,14 @@ const DisciplineDetail = () => {
             <Button onClick={handleBack}>Back to List</Button>
           </Form.Item>
         </Form>
+      )}
+      
+      {id && id !== 'new' && (
+        <>
+          <Divider />
+          <h3>Staff in this Discipline</h3>
+          <FilteredStaffTable disciplineId={id} />
+        </>
       )}
     </div>
   );

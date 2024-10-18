@@ -180,8 +180,13 @@ export const getDiscipline = async (id) => {
 // Add these functions to the existing api.js file
 
 export const getStaff = async () => {
-  const response = await axios.get('/api/staff');
-  return response.data;
+  try {
+    const response = await axios.get('/api/staff');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching staff:', error);
+    throw error;
+  }
 };
 
 export const createStaff = async (staff) => {
@@ -197,6 +202,18 @@ export const updateStaff = async (id, staff) => {
 export const deleteStaff = async (id) => {
   const response = await axios.delete(`/api/staff/${id}`);
   return response.data;
+};
+
+// Add this new function
+export const getStaffByDiscipline = async (disciplineId) => {
+  try {
+    const response = await axios.get(`/api/staff/discipline/${disciplineId}`);
+    console.log('here xxxa',response);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching staff by discipline:', error);
+    throw error;
+  }
 };
 
 export default api;
