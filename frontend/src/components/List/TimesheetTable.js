@@ -140,7 +140,6 @@ const TimesheetTable = () => {
   const fetchWorkOrders = async () => {
     try {
       const workOrderData = await getWorkOrderDropdownList();
-      console.log('Work Order data received:', workOrderData);
       setWorkOrders(workOrderData.data);
     } catch (error) {
       console.error('Error fetching work orders:', error);
@@ -302,8 +301,8 @@ const TimesheetTable = () => {
       key: 'StaffID',
       editable: true,
       render: (staffId) => {
-        const staffMember = staff.find(s => s.StaffID === staffId);
-        return staffMember ? staffMember.Name : 'Unknown';
+        const staffMember = staff.find(s => s.id === staffId);
+        return staffMember ? staffMember.name : 'Unknown';
       },
       sorter: (a, b) => {
         const staffA = staff.find(s => s.id === a.StaffID);
@@ -319,7 +318,7 @@ const TimesheetTable = () => {
       editable: true,
       render: (workOrderId) => {
         const workOrder = workOrders.find(wo => wo.id === workOrderId);
-        return workOrder ? `${workOrder.name}` : 'Unknown';
+        return workOrder ? workOrder.name : 'Unknown';
       },
       sorter: (a, b) => {
         const woA = workOrders.find(wo => wo.id === a.WorkOrderID);

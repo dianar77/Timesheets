@@ -44,7 +44,7 @@ const StaffDetail = ({ staffId, onClose }) => {
   const fetchDisciplines = async () => {
     try {
       const disciplinesData = await getDisciplinesDropdownList();
-      setDisciplines(disciplinesData);
+      setDisciplines(disciplinesData.data);
     } catch (error) {
       console.error('Error fetching disciplines:', error);
       message.error(`Error fetching disciplines: ${error.message}`);

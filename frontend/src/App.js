@@ -9,7 +9,7 @@ import DisciplineTable from './components/List/DisciplineTable';
 import DisciplineDetail from './components/Detail/DisciplineDetail';
 import StaffTable from './components/List/StaffTable';
 import StaffDetail from './components/Detail/StaffDetail';
-import Sidebar from './components/Sidebar';
+import Sidebar from './components/Sidebars/Sidebar';
 import './App.css';
 
 function DisciplineRoute() {
@@ -24,7 +24,6 @@ function DisciplineRoute() {
 
 function StaffRoute() {
   const { id } = useParams();
-
   return id ? (
     <StaffDetail />
   ) : (

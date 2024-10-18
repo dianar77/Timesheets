@@ -69,7 +69,6 @@ exports.deleteStaff = async (req, res) => {
 
 exports.getStaffForDropdown = async (req, res) => {
   try {
-    console.log("XXXgetStaffForDropdown");
     const staffs = await Staff.findAll({
       attributes: ['StaffID', 'Name'],
       order: [['Name', 'ASC']]

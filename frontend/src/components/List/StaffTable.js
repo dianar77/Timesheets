@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, message } from 'antd';
-import { getStaffByDiscipline, deleteStaff } from '../../services/Staffapi';
+import { getStaffs, getStaffByDiscipline, deleteStaff } from '../../services/Staffapi';
 import { Link } from 'react-router-dom';
 import './StaffTable.css';
 
@@ -15,8 +15,13 @@ const StaffTable = ({ disciplineId }) => {
   const fetchStaff = async () => {
     try {
       setLoading(true);
-      const staffData = await getStaffByDiscipline(disciplineId);
-      console.log('XXXStaff data received:', staffData);
+      console.log("XXXdisciplineId", disciplineId);
+      let staffData = undefined;
+      if (disciplineId === undefined) {
+        staffData = await getStaffs(disciplineId);
+      } else {
+        staffData = await getStaffByDiscipline(disciplineId);
+      }
       setStaff(staffData);
     } catch (error) {
       console.error('Error fetching staff:', error);

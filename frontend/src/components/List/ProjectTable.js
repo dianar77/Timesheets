@@ -27,7 +27,7 @@ const EditableCell = ({
       inputNode = (
         <Select>
           {vessels.map(v => (
-            <Option key={v.VesselID} value={v.VesselID}>{v.Name}</Option>
+            <Option key={v.id} value={v.id}>{v.name}</Option>
           ))}
         </Select>
       );
@@ -87,7 +87,7 @@ const ProjectTable = () => {
   const fetchVessels = async () => {
     try {
       const vesselData = await getVesselDropdownList();
-      setVessels(vesselData);
+      setVessels(vesselData.data);
     } catch (error) {
       console.error('Error fetching vessels:', error);
       message.error(`Error fetching vessel data: ${error.message}`);
@@ -184,8 +184,8 @@ const ProjectTable = () => {
       key: 'VesselID',
       editable: true,
       render: (vesselId) => {
-        const vessel = vessels.find(v => v.VesselID === vesselId);
-        return vessel ? vessel.Name : 'Unknown';
+        const vessel = vessels.find(v => v.id === vesselId);
+        return vessel ? vessel.name : 'Unknown';
       },
     },
     {

@@ -67,8 +67,8 @@ exports.deleteWorkOrder = async (req, res) => {
 exports.getWorkOrderForDropdown = async (req, res) => {
     try {
       const workOrders = await WorkOrder.findAll({
-        attributes: ['WorkOrderID', 'Name'],
-        order: [['Name', 'ASC']]
+        attributes: ['WorkOrderID', 'Task', 'Description'],
+        order: [['Task', 'ASC']]
       });
       
       const formattedworkOrders = workOrders.map(d => ({
