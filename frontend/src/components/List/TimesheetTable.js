@@ -108,8 +108,9 @@ const TimesheetTable = ( staffId = null) => {
       setLoading(true);
 
       let data;
+      console.log('xxxts', staffId);
       if (staffId) {
-        data = await getTimesheetByStaff(staffId);
+        data = await getTimesheetByStaff(staffId.staffId);
       } else {
         data = await getTimesheets();
       }

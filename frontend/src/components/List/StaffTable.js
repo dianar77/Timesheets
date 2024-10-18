@@ -65,6 +65,7 @@ const StaffTable = ({ disciplineId = null }) => {
     try {
       setLoading(true);
       let response;
+      console.log('xxxsd', disciplineId);
       if (disciplineId) {
         response = await getStaffByDiscipline(disciplineId);
       } else {

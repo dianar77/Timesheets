@@ -14,7 +14,7 @@ import './App.css';
 
 function DisciplineRoute() {
   const { id } = useParams();
-
+console.log('xxxdd', id);
   return id ? (
     <DisciplineDetail />
   ) : (
@@ -24,6 +24,7 @@ function DisciplineRoute() {
 
 function StaffRoute() {
   const { id } = useParams();
+  console.log('xxxss', id);
   return id ? (
     <StaffDetail />
   ) : (
