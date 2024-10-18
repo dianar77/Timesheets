@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, DatePicker, InputNumber, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getTimesheets, updateTimesheet, deleteTimesheet, createTimesheet } from '../../services/Timesheetapi';
+import { getTimesheets, updateTimesheet, deleteTimesheet, createTimesheet, getTimesheetByStaff } from '../../services/Timesheetapi';
 import { getWorkOrderDropdownList } from '../../services/WorkOrderapi';
 import { getStaffsDropdownList } from '../../services/Staffapi';
 import moment from 'moment';
@@ -76,7 +76,7 @@ const EditableCell = ({
   );
 };
 
-const TimesheetTable = () => {
+const TimesheetTable = ( staffId = null) => {
   const [form] = Form.useForm();
   const [timesheets, setTimesheets] = useState([]);
   const [staff, setStaff] = useState([]);
@@ -95,7 +95,7 @@ const TimesheetTable = () => {
     fetchTimesheets();
     fetchStaff();
     fetchWorkOrders();
-  }, []);
+  }, [staffId]);
 
   useEffect(() => {
     if (editingKey === '') {
@@ -106,7 +106,13 @@ const TimesheetTable = () => {
   const fetchTimesheets = async () => {
     try {
       setLoading(true);
-      const data = await getTimesheets();
+
+      let data;
+      if (staffId) {
+        data = await getTimesheetByStaff(staffId);
+      } else {
+        data = await getTimesheets();
+      }
       if (Array.isArray(data)) {
         setTimesheets(data);
       } else if (data && typeof data === 'object') {
@@ -408,10 +414,12 @@ const TimesheetTable = () => {
 
   return (
     <div>
-      <h2>Timesheet Table</h2>
+      <h2>{staffId ? 'Timesheet for this Staff' : 'Timesheet Table'}</h2>
+      {!staffId && (
       <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }} icon={<PlusOutlined />}>
         Add Timesheet
       </Button>
+      )}
       <Form form={form} component={false}>
         <Table
           components={{
