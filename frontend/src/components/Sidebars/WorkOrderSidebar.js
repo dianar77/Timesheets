@@ -6,7 +6,7 @@ import { FileOutlined } from '@ant-design/icons';
 
 const { SubMenu } = Menu;
 
-function WorkOrderSidebar({ onWorkOrderSelect , isExpanded, onExpand }) {
+function WorkOrderSidebar({ onWorkOrderSelect, isExpanded, onExpand }) {
   const [workOrders, setWorkOrders] = useState([]);
   const navigate = useNavigate();
 
@@ -29,8 +29,13 @@ function WorkOrderSidebar({ onWorkOrderSelect , isExpanded, onExpand }) {
   };
 
   return (
-    <SubMenu key="workorders" icon={<FileOutlined />} title={<Link to="/workorders">Work Orders</Link>} onTitleClick={onExpand}
-    open={isExpanded}>
+    <SubMenu
+      key="workorders"
+      icon={<FileOutlined />}
+      title={<Link to="/workorders">Work Orders</Link>}
+      onTitleClick={onExpand}
+      open={isExpanded}
+    >
       {workOrders.map(workOrder => (
         <Menu.Item key={`workorder-${workOrder.id}`} onClick={() => handleWorkOrderClick(workOrder.id)}>
           {workOrder.name}

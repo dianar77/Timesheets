@@ -6,7 +6,7 @@ import { TeamOutlined } from '@ant-design/icons';
 
 const { SubMenu } = Menu;
 
-function StaffSidebar({ onStaffSelect, isExpanded, onExpand  }) {
+function StaffSidebar({ onStaffSelect, isExpanded, onExpand }) {
   const [staffs, setStaffs] = useState([]);
   const navigate = useNavigate();
 
@@ -29,8 +29,13 @@ function StaffSidebar({ onStaffSelect, isExpanded, onExpand  }) {
   };
 
   return (
-    <SubMenu key="staffs" icon={<TeamOutlined />} title={<Link to="/staffs">Staffs</Link>} onTitleClick={onExpand}
-    open={isExpanded}>
+    <SubMenu
+      key="staffs"
+      icon={<TeamOutlined />}
+      title={<Link to="/staffs">Staffs</Link>}
+      onTitleClick={onExpand}
+      open={isExpanded}
+    >
       {staffs.map(staff => (
         <Menu.Item key={`staff-${staff.id}`} onClick={() => handleStaffClick(staff.id)}>
           {staff.name}
