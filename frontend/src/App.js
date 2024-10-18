@@ -10,6 +10,7 @@ import DisciplineDetail from './components/Detail/DisciplineDetail';
 import StaffTable from './components/List/StaffTable';
 import StaffDetail from './components/Detail/StaffDetail';
 import Sidebar from './components/Sidebars/Sidebar';
+import ClientDetail from './components/Detail/ClientDetail';
 import './App.css';
 
 function DisciplineRoute() {
@@ -32,9 +33,19 @@ function StaffRoute() {
   );
 }
 
+function ClientRoute() {
+  const { id } = useParams();
+  return id ? (
+    <ClientDetail />
+  ) : (
+    <ClientTable />
+  );
+}
+
 function App() {
   const [selectedDisciplineId, setSelectedDisciplineId] = useState(null);
   const [selectedStaffId, setSelectedStaffId] = useState(null);
+  const [selectedClientId, setSelectedClientId] = useState(null);
 
   const handleDisciplineSelect = (disciplineId) => {
     setSelectedDisciplineId(disciplineId);
@@ -44,16 +55,22 @@ function App() {
     setSelectedStaffId(staffId);
   };
 
+  const handleClientSelect = (clientId) => {
+    setSelectedClientId(clientId);
+  };
+
   return (
     <Router>
       <div className="app" style={{ display: 'flex' }}>
         <Sidebar 
           onDisciplineSelect={handleDisciplineSelect} 
           onStaffSelect={handleStaffSelect}
+          onClientSelect={handleClientSelect}
         />
         <div className="content" style={{ flex: 1, padding: '20px' }}>
           <Routes>
-            <Route path="/clients" element={<ClientTable />} />
+            <Route path="/clients" element={<ClientRoute />} />
+            <Route path="/clients/:id" element={<ClientRoute />} />
             <Route path="/timesheets" element={<TimesheetTable />} />
             <Route path="/vessels" element={<VesselTable />} />
             <Route path="/workorders" element={<WorkOrderTable />} />
