@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useParams } from 'react-router-dom';
 import ClientTable from './components/List/ClientTable';
+import ClientDetail from './components/Detail/ClientDetail';
 import TimesheetTable from './components/List/TimesheetTable';
 import VesselTable from './components/List/VesselTable';
 import WorkOrderTable from './components/List/WorkOrderTable';
@@ -10,7 +11,7 @@ import DisciplineDetail from './components/Detail/DisciplineDetail';
 import StaffTable from './components/List/StaffTable';
 import StaffDetail from './components/Detail/StaffDetail';
 import Sidebar from './components/Sidebars/Sidebar';
-import ClientDetail from './components/Detail/ClientDetail';
+
 import './App.css';
 
 function DisciplineRoute() {

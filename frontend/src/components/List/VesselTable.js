@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, Popconfirm, Form, message, InputNumber, Select } from 'antd';
 import { EditOutlined, DeleteOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { getVessels, createVessel, updateVessel, deleteVessel } from '../../services/Vesselapi';
+import { getVessels, createVessel, updateVessel, deleteVessel, getVesselByClient } from '../../services/Vesselapi';
 import { getClientDropdownList } from '../../services/Clientapi';
 import './VesselTable.css';
 
@@ -58,40 +58,29 @@ const EditableCell = ({
   );
 };
 
-const VesselTable = () => {
+const VesselTable = ({ clientId = null }) => {
   const [form] = Form.useForm();
   const [vessels, setVessels] = useState([]);
   const [clients, setClients] = useState([]);
   const [editingKey, setEditingKey] = useState('');
   const [loading, setLoading] = useState(true);
   const [newVessel, setNewVessel] = useState(null);
-  const [filters, setFilters] = useState({
-    name: '',
-    number: '',
-    client: null,
-  });
-  const [sortedInfo, setSortedInfo] = useState({});
 
   useEffect(() => {
-    fetchVesselData();
-    fetchClientData();
-  }, []);
+    fetchVessels();
+    fetchClients();
+  }, [clientId]);
 
-  useEffect(() => {
-    if (editingKey === '') {
-      fetchVesselData();
-    }
-  }, [editingKey]);
-
-  const fetchVesselData = async () => {
+  const fetchVessels = async () => {
     try {
       setLoading(true);
-      const data = await getVessels();
-      if (Array.isArray(data)) {
-        setVessels(data);
+      let response;
+      if (clientId) {
+        response = await getVesselByClient(clientId);
       } else {
-        throw new Error('Unexpected data format');
+        response = await getVessels();
       }
+      setVessels(response);
     } catch (error) {
       console.error('Error fetching vessels:', error);
       message.error(`Error fetching vessels: ${error.message}`);
@@ -100,7 +89,7 @@ const VesselTable = () => {
     }
   };
 
-  const fetchClientData = async () => {
+  const fetchClients = async () => {
     try {
       const clientData = await getClientDropdownList();
       setClients(clientData.data);
@@ -135,14 +124,14 @@ const VesselTable = () => {
       let updatedVessel;
       
       if (key === 'new') {
-        updatedVessel = await createVessel(row);
+        updatedVessel = await createVessel({ ...row, ClientID: clientId || row.ClientID });
         setVessels(prev => [updatedVessel, ...prev]);
         setNewVessel(null);
       } else {
         const updatedItem = { 
           ...row, 
           VesselID: key,
-          ClientID: Number(row.ClientID),
+          ClientID: clientId || Number(row.ClientID),
           Num: Number(row.Num)
         };
         updatedVessel = await updateVessel(key, updatedItem);
@@ -153,7 +142,6 @@ const VesselTable = () => {
       
       setEditingKey('');
       message.success('Vessel saved successfully');
-      setVessels(prev => [...prev]);
     } catch (errInfo) {
       console.error('Save failed:', errInfo);
       message.error('Failed to save: ' + errInfo.message);
@@ -163,8 +151,7 @@ const VesselTable = () => {
   const handleDelete = async (key) => {
     try {
       await deleteVessel(key);
-      const newData = vessels.filter((item) => item.VesselID !== key);
-      setVessels(newData);
+      setVessels(prev => prev.filter(item => item.VesselID !== key));
       message.success('Vessel deleted successfully');
     } catch (error) {
       console.error('Error deleting vessel:', error);
@@ -177,106 +164,35 @@ const VesselTable = () => {
       VesselID: 'new',
       Name: '',
       Num: null,
-      ClientID: null,
+      ClientID: clientId || null,
     };
     setNewVessel(newVesselData);
     setEditingKey('new');
     form.setFieldsValue(newVesselData);
   };
 
-  const handleFilterChange = (filterType, value) => {
-    setFilters(prevFilters => ({
-      ...prevFilters,
-      [filterType]: value
-    }));
-  };
-
-  const filteredVessels = vessels.filter(vessel => {
-    return (
-      vessel.Name.toLowerCase().includes(filters.name.toLowerCase()) &&
-      (filters.number === '' || vessel.Num.toString().includes(filters.number)) &&
-      (!filters.client || vessel.ClientID === filters.client)
-    );
-  });
-
-  const handleChange = (pagination, filters, sorter) => {
-    console.log('Various parameters', pagination, filters, sorter);
-    setSortedInfo(sorter);
-  };
-
-  const FilterHeader = () => (
-    <tr className="filter-row">
-      <th>
-        <Input
-          placeholder="Filter by Name"
-          value={filters.name}
-          onChange={(e) => handleFilterChange('name', e.target.value)}
-        />
-      </th>
-      <th>
-        <Input
-          placeholder="Filter by Number"
-          value={filters.number}
-          onChange={(e) => handleFilterChange('number', e.target.value)}
-        />
-      </th>
-      <th>
-        <Select
-          style={{ width: '100%' }}
-          placeholder="Filter by Client"
-          onChange={(value) => handleFilterChange('client', value)}
-          allowClear
-        >
-          {clients.map(client => (
-            <Option key={client.id} value={client.id}>{client.name}</Option>
-          ))}
-        </Select>
-      </th>
-      <th></th> {/* Empty cell for Actions column */}
-    </tr>
-  );
-
   const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'VesselID',
-      key: 'VesselID',
-      editable: false,
-      hidden: true,
-      sorter: (a, b) => a.VesselID - b.VesselID,
-      sortOrder: sortedInfo.columnKey === 'VesselID' && sortedInfo.order,
-    },
     {
       title: 'Name',
       dataIndex: 'Name',
       key: 'Name',
       editable: true,
-      sorter: (a, b) => a.Name.localeCompare(b.Name),
-      sortOrder: sortedInfo.columnKey === 'Name' && sortedInfo.order,
     },
     {
       title: 'Number',
       dataIndex: 'Num',
       key: 'Num',
       editable: true,
-      sorter: (a, b) => a.Num - b.Num,
-      sortOrder: sortedInfo.columnKey === 'Num' && sortedInfo.order,
     },
     {
       title: 'Client',
       dataIndex: 'ClientID',
       key: 'ClientID',
-      editable: true,
+      editable: !clientId,
       render: (clientId) => {
         const client = clients.find(c => c.id === clientId);
         return client ? client.name : 'Unknown';
       },
-      sorter: (a, b) => {
-        const clientA = clients.find(c => c.id === a.ClientID);
-        const clientB = clients.find(c => c.id === b.ClientID);
-        return clientA.name.localeCompare(clientB.name);
-      },
-      sortOrder: sortedInfo.columnKey === 'ClientID' && sortedInfo.order,
     },
     {
       title: 'Actions',
@@ -333,36 +249,28 @@ const VesselTable = () => {
         clients: clients,
       }),
     };
-  }).filter(col => !col.hidden);
+  });
 
   return (
-    <div>
-      <h2>Vessel Table</h2>
-      <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }} icon={<PlusOutlined />}>
-        Add Vessel
-      </Button>
+    <div className="vessel-table">
+      <h2>{clientId ? 'Vessels for this Client' : 'Vessel Table'}</h2>
+      {!clientId && (
+        <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }} icon={<PlusOutlined />}>
+          Add Vessel
+        </Button>
+      )}
       <Form form={form} component={false}>
         <Table
           components={{
             body: {
               cell: EditableCell,
             },
-            header: {
-              wrapper: ({ children }) => (
-                <thead>
-                  <FilterHeader />
-                  {children}
-                </thead>
-              ),
-            },
           }}
           loading={loading}
           columns={mergedColumns}
-          dataSource={newVessel ? [newVessel, ...filteredVessels] : filteredVessels}
+          dataSource={newVessel ? [newVessel, ...vessels] : vessels}
           rowKey={(record) => record.VesselID}
           bordered
-          style={{ background: 'white' }}
-          onChange={handleChange}
         />
       </Form>
     </div>
