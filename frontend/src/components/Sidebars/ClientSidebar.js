@@ -30,16 +30,12 @@ function ClientSidebar({ onClientSelect, isExpanded, onExpand }) {
 
   return (
     <SubMenu
-      key="clients"
+      key="clientsSubmenu"
       icon={<TeamOutlined />}
       title={<Link to="/clients">Clients</Link>}
-      onClick={onExpand}
+      onTitleClick={() => onExpand()}
       open={isExpanded}
     >
-      
-        {console.log('xxxaaisExpanded', isExpanded)}
-   
-    
       {clients.map(client => (
         <Menu.Item key={`client-${client.id}`} onClick={() => handleClientClick(client.id)}>
           {client.name}

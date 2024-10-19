@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Menu } from 'antd';
-import { Link } from 'react-router-dom';
 import './Sidebar.css';
 import DisciplineSidebar from './DisciplineSidebar';
 import StaffSidebar from './StaffSidebar';
@@ -14,8 +13,10 @@ function Sidebar({ onDisciplineSelect, onStaffSelect, onClientSelect, onProjectS
   const [expandedItem, setExpandedItem] = useState(null);
 
   const handleExpand = (item) => {
+    console.log('xxxitem', item);
+    console.log('xxxexpandedItem0', expandedItem);
     setExpandedItem(expandedItem === item ? null : item);
-    console.log('xxxitem', expandedItem);
+    console.log('xxxHello', expandedItem)
   };
 
   return (
@@ -24,7 +25,7 @@ function Sidebar({ onDisciplineSelect, onStaffSelect, onClientSelect, onProjectS
         <h2>Dashboard</h2>
       </div>
       <Menu mode="inline" theme="dark">
-        <VesselSidebar onVesselSelect={onVesselSelect} isExpanded={expandedItem === 'vessel'} onExpand={() => handleExpand('vessel')} />
+        <VesselSidebar onVesselSelect={onVesselSelect} isExpanded={expandedItem === 'vessel'} onExpand={() => handleExpand('vessel') } />
         <WorkOrderSidebar onWorkOrderSelect={onWorkOrderSelect} isExpanded={expandedItem === 'workOrder'} onExpand={() => handleExpand('workOrder')} />
         <TimesheetSidebar onTimesheetSelect={onTimesheetSelect} isExpanded={expandedItem === 'timesheet'} onExpand={() => handleExpand('timesheet')} />
         <ProjectSidebar onProjectSelect={onProjectSelect} isExpanded={expandedItem === 'project'} onExpand={() => handleExpand('project')} />

@@ -28,12 +28,13 @@ function VesselSidebar({ onVesselSelect, isExpanded, onExpand }) {
     navigate(`/vessels/${vesselId}`);
   };
 
+
   return (
     <SubMenu
-      key="vessels"
+      key="vesselsSubmenu"
       icon={<ToolOutlined />}
       title={<Link to="/vessels">Vessels</Link>}
-      onClick={onExpand}
+      onTitleClick={() => onExpand()}
       open={isExpanded}
     >
       {vessels.map(vessel => (

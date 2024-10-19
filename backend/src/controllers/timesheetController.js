@@ -143,7 +143,6 @@ exports.getTimesheetByWorkOrder = async (req, res) => {
     });
     res.json(timesheets);
   } catch (error) {
-    console.log('xxxtw', req.params);
     console.error('Error fetching timesheet by workOrder:', error);
     res.status(500).json({ message: 'Error fetching timesheet by workOrder', error: error.message });
   }

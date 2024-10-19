@@ -30,10 +30,10 @@ function DisciplineSidebar({ onDisciplineSelect, isExpanded, onExpand }) {
 
   return (
     <SubMenu
-      key="disciplines"
+      key="disciplinesSubmenu"
       icon={<ToolOutlined />}
       title={<Link to="/disciplines">Disciplines</Link>}
-      onClick={onExpand}
+      onTitleClick={() => onExpand()}
       open={isExpanded}
     >
       {disciplines.map(discipline => (

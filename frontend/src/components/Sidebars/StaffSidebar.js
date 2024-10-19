@@ -30,10 +30,10 @@ function StaffSidebar({ onStaffSelect, isExpanded, onExpand }) {
 
   return (
     <SubMenu
-      key="staffs"
+      key="staffsSubmenu"
       icon={<TeamOutlined />}
       title={<Link to="/staffs">Staffs</Link>}
-      onClick={onExpand}
+      onTitleClick={() => onExpand()}
       open={isExpanded}
     >
       {staffs.map(staff => (

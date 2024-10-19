@@ -30,16 +30,12 @@ function ProjectSidebar({ onProjectSelect, isExpanded, onExpand }) {
 
   return (
     <SubMenu
-      key="projects"
+      key="projectsSubmenu"
       icon={<ProjectOutlined />}
       title={<Link to="/projects">Projects</Link>}
-      onClick={onExpand}
+      onTitleClick={() => onExpand()}
       open={isExpanded}
     >
-
-
-        {console.log('xxxbbisExpanded', isExpanded)}
- 
       {projects.map(project => (
         <Menu.Item key={`project-${project.id}`} onClick={() => handleProjectClick(project.id)}>
           {project.name}

@@ -30,10 +30,10 @@ function TimesheetSidebar({ onTimesheetSelect, isExpanded, onExpand }) {
 
   return (
     <SubMenu
-      key="timesheets"
+      key="timesheetsSubmenu"
       icon={<ClockCircleOutlined />}
       title={<Link to="/timesheets">Timesheets</Link>}
-      onClick={onExpand}
+      onTitleClick={() => onExpand()}
       open={isExpanded}
     >
       {timesheets.map(timesheet => (
