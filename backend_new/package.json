@@ -1,0 +1,15 @@
+{
+  "name": "timesheetbackend",
+  "version": "1.0.0",
+  "description": "Azure Functions API for Timesheets",
+  "scripts": {
+    "start": "func start"
+  },
+  "dependencies": {
+    "@azure/functions": "^3.0.0",
+    "mssql": "^7.3.0"
+  },
+  "devDependencies": {
+    "azure-functions-core-tools": "^4.x"
+  }
+}

@@ -1,0 +1,39 @@
+1. I changed the DB to azure
+Important, you need to add you local ipaddress to the firewall rules of the azure sql server
+2. I changed the connection string in the .env file
+3. I changed the host.json file to the new version
+5. I changed the function.json file to the new version
+
+Deploying the function app:
+commands:
+
+npm install @azure/functions
+npm install -g azure-functions-core-tools@4 --unsafe-perm true
+
+az login --use-device-code
+az functionapp create --resource-group Timesheets --consumption-plan-location canadacentral --runtime node --runtime-version 18 --functions-version 4 --name timesheetbackende --storage-account timesheetstorageaccount1
+I needed to create a new storage account
+az functionapp config appsettings set --name timesheetbackende --resource-group Timesheets --settings DB_USER=timesheetdiana DB_PASSWORD=saPasswordtm1! DB_SERVER=timesheetseastserver.database.windows.net DB_NAME=Timesheets
+
+npm install -g azure-functions-core-tools@4 --unsafe-perm true
+func azure functionapp publish timesheetbackende
+
+az functionapp config appsettings set --name timesheetbackende --resource-group Timesheets --settings FUNCTIONS_WORKER_RUNTIME=node
+func azure functionapp publish timesheetbackende --javascript
+func init . --javascript
+func new --name TimesheetHttpTrigger --template "HTTP trigger" --authlevel "anonymous"
+func azure functionapp publish timesheetbackende
+
+az functionapp show --name timesheetbackende --resource-group Timesheets --query state
+az functionapp config appsettings list --name timesheetbackende --resource-group Timesheets
+
+func azure functionapp publish timesheetbackende
+
+func azure functionapp list-functions timesheetbackende --show-keys
+
+func start //run local server
+
+
+
+
+

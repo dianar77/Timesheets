@@ -1,0 +1,11 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "SQL_SERVER": "timesheetseastserver.database.windows.net",
+    "SQL_DATABASE": "Timesheets",
+    "SQL_USER": "timesheetdiana",
+    "SQL_PASSWORD": "saPasswordtm1!"
+  }
+}
